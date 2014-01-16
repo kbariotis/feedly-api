@@ -5,6 +5,17 @@ PHP wrapper around [Feedly's REST API](http://developer.feedly.com/).
 
 **Under Construction! Not every API's functionality implemented yet.**
 
+Instalation
+---------------
+Add this to your composer.json
+```
+"require": {
+        "kbariotis/feedly-api": "dev-master"
+    }
+```
+
+Or download the [ZIP](https://github.com/stakisko/feedly-api/archive/master.zip).
+
 Documentation
 ---------
 Constructor:
