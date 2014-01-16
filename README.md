@@ -3,7 +3,7 @@ feedly-api
 
 PHP wrapper around [Feedly's REST API](http://developer.feedly.com/).
 
-* Under Construction! Not every API's functionality implemented yet. *
+*Under Construction! Not every API's functionality implemented yet.*
 
 Documentation
 ---------
