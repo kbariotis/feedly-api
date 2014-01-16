@@ -42,45 +42,49 @@ Constructor:
         $redirect_url) 
 ```
 
+[Get The Profile of The User](http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user)
 ```php
 /**
-     * @see http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
     $feedly->getProfile($token=NULL) 
 ```
 
+[Get The Preferences of The User](http://developer.feedly.com/v3/preferences/#get-the-preferences-of-the-user)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/preferences/#get-the-preferences-of-the-user
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
     $feedly->getPreferences($token=NULL)
 ```
 
+[Get The List Of All Categories](http://developer.feedly.com/v3/categories/#get-the-list-of-all-categories)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/categories/#get-the-list-of-all-categories
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
     $feedly->getCategories($token=NULL)
 ```
 
+[Get The Subscriptions of The User](http://developer.feedly.com/v3/subscriptions/#get-the-users-subscriptions)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/subscriptions/#get-the-users-subscriptions
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
     $feedly->getSubscriptions($token=NULL) 
 ```
 
+[Get The Metadata About a Specific Feed](http://developer.feedly.com/v3/feeds/#get-the-metadata-about-a-specific-feed)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/feeds/#get-the-metadata-about-a-specific-feed
      * @param  string $feedId Feed's ID
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
@@ -88,9 +92,10 @@ Constructor:
     $feedly->getFeedMetadata($feedId, $token=NULL) 
 ```
 
+[Get The Content of A Stream](http://developer.feedly.com/v3/streams/#get-the-content-of-a-stream)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/streams/#get-the-content-of-a-stream
      * @param  string $streamId Stream's ID
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
@@ -99,9 +104,10 @@ Constructor:
         $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) 
 ```
 
+[Get a mix of the most engaging content available in a stream](http://developer.feedly.com/v3/mixes/#get-a-mix-of-the-most-engaging-content-available-in-a-stream)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/profile/
      * @param  string $streamId Stream's ID
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
@@ -110,9 +116,10 @@ Constructor:
         $newerThan=NULL, $hours=NULL, $token=NULL) 
 ```
 
+[Get a List of Entry IDs For a Specific Stream](http://developer.feedly.com/v3/streams/#get-a-list-of-entry-ids-for-a-specific-stream)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/profile/
      * @param  string $streamId Stream's ID
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
@@ -121,36 +128,40 @@ Constructor:
         $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) 
 ```
 
+[Get The List Of Topics The User Has Added To Their Feedly](http://developer.feedly.com/v3/topics/#get-the-list-of-topics-the-user-has-added-to-their-feedly)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/profile/
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
     $feedly->getTopics($token=NULL)
 ```
 
+[Get The List Of Tags Created By The User.](http://developer.feedly.com/v3/tags/#get-the-list-of-tags-created-by-the-user)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/profile/
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
    $feedly->getTags($token=NULL)
 ```
 
+[Find Feeds Based On Title, Url Or #topichttp://developer.feedly.com/](http://developer.feedly.com/v3/search/#find-feeds-based-on-title-url-or-topichttpdeveloperfeedlycom)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/profile/
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
     $feedly->searchFeeds($q, $n=NULL, $token=NULL)
 ```
 
+[Get The List Of Onread Counts](http://developer.feedly.com/v3/markers/#get-the-list-of-unread-counts)
+
 ```php
     /**
-     * @see http://developer.feedly.com/v3/profile/
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
