@@ -57,7 +57,17 @@ class Feedly {
     public function GetAccessToken($client_id, $client_secret, $auth_code,
         $redirect_url) {
 
-        $r = $this->InitCurl($this->_apiBaseUrl . $this->_accessTokenUrl);
+        $r = null;
+        if (($r = @curl_init($this->_apiBaseUrl . $this->_accessTokenPath)) == false) {
+            header("HTTP/1.1 500", true, 500);
+            die("Cannot initialize cUrl session. Is cUrl enabled for your PHP installation?");
+        }
+
+        curl_setopt($r, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($r, CURLOPT_ENCODING, 1);
+
+        curl_setopt($r, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($r, CURLOPT_CAINFO, "C:\wamp\bin\apache\Apache2.2.21\cacert.crt");
 
         // Add client ID and client secret to the headers.
         curl_setopt($r, CURLOPT_HTTPHEADER, array (
@@ -83,9 +93,11 @@ class Feedly {
 
         if($this->_storeAccessTokenToSession){
             $tmp = json_decode($response, true);
-            session_start();
-            $_SESSION['access_token'] = $tmp['access_token'];
-            session_write_close();
+            if(!isset($_SESSION['access_token'])){
+                session_start();
+                $_SESSION['access_token'] = $tmp['access_token'];
+                session_write_close();
+            }
         }
 
         return $response;
@@ -310,12 +322,11 @@ class Feedly {
      * @return string Access Token from $_SESSION
      */
     protected function _getAccessTokenFromSession(){
-        session_start();
-        if(!isset($_SESSION['access_token'])){
+        if(isset($_SESSION['access_token'])){
+            return $_SESSION['access_token'];
+        }else {
             throw new Exception("No access token", 1);
         }
-        session_write_close();
-        return $_SESSION['access_token'];
     }
 }
 

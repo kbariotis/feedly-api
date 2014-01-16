@@ -1,0 +1,16 @@
+{
+    "name": "kbariotis/feedly-api",
+    "description": "PHP wrapper around Feedly's REST API",
+    "license": "MIT",
+    "homepage": "https://github.com/stakisko/feedly-api",
+    "authors": [
+        {
+            "name": "Kostas Bariotis",
+            "email": "konmpar@gmail.com",
+            "homepage": "http://kostasbariotis.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "3.7.29"
+    }
+}
