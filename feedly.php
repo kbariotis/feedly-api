@@ -10,8 +10,8 @@
 class Feedly {
     private
         $_apiBaseUrl = "https://cloud.feedly.com",
-        $_AuthorizeUrl = "https://sandbox.feedly.com/v3/auth/auth",
-        $_AccessTokenUrl = "https://sandbox.feedly.com/v3/auth/token",
+        $_authorizePath = "/v3/auth/auth",
+        $_accessTokenPath = "/v3/auth/token",
         $_storeAccessTokenToSession;
 
     /**
@@ -36,7 +36,7 @@ class Feedly {
     public function getLoginUrl ($client_id, $redirect_uri,
         $response_type="code", $scope="https://cloud.feedly.com/subscriptions") {
 
-        return($this->_AuthorizeUrl . "?" .
+        return($this->_apiBaseUrl . $this->_authorizePath . "?" .
             http_build_query(array(
                 "client_id"=>$client_id,
                 "redirect_uri"=>$redirect_uri,
@@ -57,7 +57,7 @@ class Feedly {
     public function GetAccessToken($client_id, $client_secret, $auth_code,
         $redirect_url) {
 
-        $r = $this->InitCurl($this->_AccessTokenUrl);
+        $r = $this->InitCurl($this->_apiBaseUrl . $this->_accessTokenUrl);
 
         // Add client ID and client secret to the headers.
         curl_setopt($r, CURLOPT_HTTPHEADER, array (
