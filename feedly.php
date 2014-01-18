@@ -215,7 +215,7 @@ class Feedly {
     public function getStreamContent($streamId, $count=NULL, $ranked=NULL,
         $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) {
 
-        return $this->InitCurl('/v3/streams/contents',
+        return $this->ExecRequest('/v3/streams/contents',
             array(
                 "streamId"=>$streamId,
                 "count"=>$count,
@@ -237,7 +237,7 @@ class Feedly {
     public function getMixes($streamId, $count=NULL, $unreadOnly=NULL,
         $newerThan=NULL, $hours=NULL, $token=NULL) {
 
-        return $this->InitCurl('/v3/streams/contents',
+        return $this->ExecRequest('/v3/streams/contents',
             array(
                 "streamId"=>$streamId,
                 "count"=>$count,
@@ -257,7 +257,7 @@ class Feedly {
     public function getStreamIds($streamId, $count=NULL, $ranked=NULL,
         $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) {
 
-        return $this->InitCurl('/v3/streams/contents',
+        return $this->ExecRequest('/v3/streams/contents',
             array(
                 "streamId"=>$streamId,
                 "count"=>$count,
@@ -275,7 +275,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function getTopics($token=NULL) {
-        return $this->InitCurl('/v3/topics', NULL, $token);
+        return $this->ExecRequest('/v3/topics', NULL, $token);
     }
 
     /**
@@ -284,7 +284,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function getTags($token=NULL) {
-        return $this->InitCurl('/v3/tags', NULL, $token);
+        return $this->ExecRequest('/v3/tags', NULL, $token);
     }
 
     /**
@@ -293,7 +293,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function searchFeeds($q, $n=NULL, $token=NULL) {
-        return $this->InitCurl('/v3/search/feeds?',
+        return $this->ExecRequest('/v3/search/feeds?',
             array(
                 "q"=>$q,
                 "n"=>$n
@@ -309,7 +309,7 @@ class Feedly {
     public function getUnreadCounts($autorefresh=NULL, $newerThan=NULL,
         $streamId=NULL, $token=NULL) {
 
-        return $this->InitCurl('/v3/markers/counts?autorefresh=',
+        return $this->ExecRequest('/v3/markers/counts?autorefresh=',
             array(
                 "autorefresh"=>$autorefresh,
                 "newerThan"=>$newerThan,
