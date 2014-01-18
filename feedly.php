@@ -322,6 +322,7 @@ class Feedly {
      * @return string Access Token from $_SESSION
      */
     protected function _getAccessTokenFromSession(){
+        session_start();
         if(isset($_SESSION['access_token'])){
             return $_SESSION['access_token'];
         }else {
