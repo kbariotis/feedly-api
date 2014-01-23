@@ -10,7 +10,9 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
      */
     public function testGetLoginURL()
     {
-        $feedly = new Feedly();
+        ini_set("session.use_cookies", 0);
+
+        $feedly = new Feedly(true, false);
         $this->assertNotEmpty($feedly->getLoginUrl("sandbox", "http://localhost"));
     }
 
@@ -20,10 +22,13 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
      */
     public function testGetAccessTokenWithoutCode()
     {
-        $feedly = new Feedly();
+        ini_set("session.use_cookies", 0);
+
+        $feedly = new Feedly(true, false);
         try {
             $feedly->GetAccessToken("sandbox", "FUFNPXDNP2J0BF7RCEUZ", "", "http://localhost");
         }catch (Exception $expected) {
+            $this->assertEquals("Response from API: missing code", $expected->getMessage());
             return;
         }
 
@@ -34,10 +39,13 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
      * Testing a Request to API without providing an Access Token
      */
     public function testExecRequestWithoutAccessToken(){
-        $feedly = new Feedly(true);
+        ini_set("session.use_cookies", 0);
+
+        $feedly = new Feedly(true, false);
         try {
             $feedly->ExecRequest('/v3/profile');
         }catch (Exception $expected) {
+            $this->assertEquals("No access token", $expected->getMessage());
             return;
         }
 

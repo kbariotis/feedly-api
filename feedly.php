@@ -21,6 +21,7 @@ class Feedly {
      */
     public function __construct($sandbox=FALSE, $storeAccessTokenToSession=TRUE) {
         $this->_storeAccessTokenToSession = $storeAccessTokenToSession;
+        if($this->_storeAccessTokenToSession) session_start();
         if($sandbox) $this->_apiBaseUrl = "https://sandbox.feedly.com";
     }
 
@@ -59,8 +60,8 @@ class Feedly {
 
         $r = null;
         if (($r = @curl_init($this->_apiBaseUrl . $this->_accessTokenPath)) == false) {
-            header("HTTP/1.1 500", true, 500);
-            die("Cannot initialize cUrl session. Is cUrl enabled for your PHP installation?");
+            throw new Exception("Cannot initialize cUrl session.
+                Is cUrl enabled for your PHP installation?");
         }
 
         curl_setopt($r, CURLOPT_RETURNTRANSFER, 1);
@@ -86,16 +87,15 @@ class Feedly {
 
         $response = curl_exec($r);
         $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
+        $tmpr = json_decode($response, true);
         curl_close($r);
 
         if($http_status!==200)
-            throw new Exception("oops");
+            throw new Exception("Response from API: " . $tmpr['errorMessage']);
 
         if($this->_storeAccessTokenToSession){
-            $tmp = json_decode($response, true);
             if(!isset($_SESSION['access_token'])){
-                session_start();
-                $_SESSION['access_token'] = $tmp['access_token'];
+                $_SESSION['access_token'] = $tmpr['access_token'];
                 session_write_close();
             }
         }
@@ -112,8 +112,8 @@ class Feedly {
         $r = null;
 
         if (($r = @curl_init($url)) == false) {
-            header("HTTP/1.1 500", true, 500);
-            die("Cannot initialize cUrl session. Is cUrl enabled for your PHP installation?");
+            throw new Exception("Cannot initialize cUrl session.
+                Is cUrl enabled for your PHP installation?");
         }
 
         curl_setopt($r, CURLOPT_RETURNTRANSFER, 1);
@@ -151,10 +151,11 @@ class Feedly {
         }
 
         $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
+        $tmpr = json_decode($response, true);
         curl_close($r);
 
         if($http_status!==200)
-            throw new Exception("oops");
+            throw new Exception("Something went wrong: " . $tmpr['errorMessage']);
         else
             return $response;
     }
@@ -322,7 +323,6 @@ class Feedly {
      * @return string Access Token from $_SESSION
      */
     protected function _getAccessTokenFromSession(){
-        session_start();
         if(isset($_SESSION['access_token'])){
             return $_SESSION['access_token'];
         }else {
