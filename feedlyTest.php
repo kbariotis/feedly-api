@@ -11,6 +11,7 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
         ini_set("session.use_cookies", 0);
         $this->instance = new Feedly(true, false);
     }
+
     /**
      * Test valid returned URL for authorization
      */
@@ -20,8 +21,8 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test `GetAccessToken` without providing a valid Code
-     * that must be obtained from the Login URL
+     * Testing GetAccessToken on failure
+     * will throw exception
      */
     public function testGetAccessTokenThrowsExceptionOnFailure()
     {
@@ -35,8 +36,7 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test `GetAccessToken` without providing a valid Code
-     * that must be obtained from the Login URL
+     * Testing GetAccessToken
      */
     public function testGetAccessToken()
     {
@@ -51,21 +51,18 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
             }
         } ';
 
-        // Create a stub for the SomeClass class.
         $feedly = $this->getMock('Feedly', array('GetAccessToken'), array(true, false));
 
-        // Configure the stub.
         $feedly->expects($this->any())
              ->method('GetAccessToken')
              ->will($this->returnValue($json));
 
-        // Calling $stub->doSomething() will now return
-        // 'foo'.
         $this->assertEquals($json, $feedly->GetAccessToken("sandbox", "FUFNPXDNP2J0BF7RCEUZ", "", "http://localhost"));
     }
 
     /**
-     * Testing a Request to API without providing an Access Token
+     * Testing a GET Request to API without providing an Access Token
+     * will throw exception
      */
     public function testExecGetRequestWithoutAccessTokenThrowsException(){
         try {
@@ -78,7 +75,7 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Testing a Request to API without providing an Access Token
+     * Testing a GET Request to API
      */
     public function testExecGetRequest(){
         $json = '
@@ -91,21 +88,17 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
             }
         } ';
 
-        // Create a stub for the SomeClass class.
         $feedly = $this->getMock('Feedly', array('ExecGetRequest'), array(true, false));
 
-        // Configure the stub.
         $feedly->expects($this->any())
              ->method('ExecGetRequest')
              ->will($this->returnValue($json));
 
-        // Calling $stub->doSomething() will now return
-        // 'foo'.
         $this->assertEquals($json, $feedly->ExecGetRequest("/dum/url"));
     }
 
     /**
-     * Testing a Request to API without providing an Access Token
+     * Testing a POST Request to API
      */
     public function testExecPostRequest(){
         $json = '
@@ -118,16 +111,12 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
             }
         } ';
 
-        // Create a stub for the SomeClass class.
         $feedly = $this->getMock('Feedly', array('ExecPostRequest'), array(true, false));
 
-        // Configure the stub.
         $feedly->expects($this->any())
              ->method('ExecPostRequest')
              ->will($this->returnValue($json));
 
-        // Calling $stub->doSomething() will now return
-        // 'foo'.
         $this->assertEquals($json, $feedly->ExecPostRequest('/dummy/url', NULL, array(
             'email'=>'odysseus@ithaka.gr',
             'givenName'=>''

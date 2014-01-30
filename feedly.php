@@ -161,9 +161,10 @@ class Feedly {
     }
 
     /**
-     * Query a URL with GET using cUrl after initialization
+     * Make a POST request
      * @param string $url        URL to query
      * @param string $get_params Parameters to pass to URL as GET params
+     * @param string $post_params Parameters to pass to URL as POST params
      * @param string $token      Access Token in case we don't store it to $_SESSION
      */
     public function ExecPostRequest($url, $get_params=NULL, $post_params=NULL, $token=NULL) {
@@ -205,7 +206,7 @@ class Feedly {
     }
 
     /**
-     * @see http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user
+     * @see http://developer.feedly.com/v3/profile/#update-the-profile-of-the-user
      * @param string $email
      * @param string $givenName
      * @param string $familyName
@@ -253,7 +254,7 @@ class Feedly {
     }
 
     /**
-     * @see http://developer.feedly.com/v3/categories/#get-the-list-of-all-categories
+     * @see http://developer.feedly.com/v3/categories/#change-the-label-of-an-existing-category
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @param  string $label Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
