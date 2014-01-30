@@ -136,7 +136,7 @@ class Feedly {
      * @param string $get_params Parameters to pass to URL as GET params
      * @param string $token      Access Token in case we don't store it to $_SESSION
      */
-    public function ExecRequest($url, $get_params=NULL, $token=NULL) {
+    public function ExecGetRequest($url, $get_params=NULL, $token=NULL) {
         $url = $this->_apiBaseUrl . $url;
 
         if(is_array($get_params))
@@ -161,12 +161,77 @@ class Feedly {
     }
 
     /**
+     * Query a URL with GET using cUrl after initialization
+     * @param string $url        URL to query
+     * @param string $get_params Parameters to pass to URL as GET params
+     * @param string $token      Access Token in case we don't store it to $_SESSION
+     */
+    public function ExecPostRequest($url, $get_params=NULL, $post_params=NULL, $token=NULL) {
+        $url = $this->_apiBaseUrl . $url;
+
+        if(is_array($get_params))
+            $r = $this->InitCurl($url .'?',
+                http_build_query($url, $get_params), $token);
+        else
+            $r = $this->InitCurl($url, $token);
+
+        $post_fields = http_build_query($post_params);
+
+        curl_setopt($r, CURLOPT_POST, true);
+        curl_setopt($r, CURLOPT_POSTFIELDS, $post_fields);
+
+        $response = curl_exec($r);
+        if ($response == false) {
+            die("curl_exec() failed. Error: " . curl_error($r));
+        }
+
+        $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
+        $tmpr = json_decode($response, true);
+        curl_close($r);
+
+        if($http_status!==200)
+            throw new Exception("Something went wrong: " . $tmpr['errorMessage']);
+        else
+            return $response;
+    }
+
+    /**
      * @see http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
+     * @param string $token Access Token in case we don't store it to $_SESSION
+     * @return json Response from the server
      */
     public function getProfile($token=NULL) {
-        return $this->ExecRequest('/v3/profile', NULL, $token);
+        return $this->ExecGetRequest('/v3/profile', NULL, $token);
+    }
+
+    /**
+     * @see http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user
+     * @param string $email
+     * @param string $givenName
+     * @param string $familyName
+     * @param string $picture
+     * @param boolean $gender
+     * @param string $locale
+     * @param string $reader google reader id
+     * @param string $twitter twitter handle. example: edwk
+     * @param string $facebook facebook id
+     * @param  string $token Access Token in case we don't store it to $_SESSION
+     * @return json Response from the server
+     */
+    public function setProfile($token=NULL, $email=NULL, $givenName=NULL, $familyName=NULL,
+        $picture=NULL, $gender=NULL, $locale=NULL,
+        $reader=NULL, $twitter=NULL, $facebook=NULL) {
+        return $this->ExecPostRequest('/v3/profile', NULL, array(
+            'email'=>$email,
+            'givenName'=>$givenName,
+            'familyName'=>$familyName,
+            'picture'=>$picture,
+            'gender'=>$gender,
+            'locale'=>$locale,
+            'reader'=>$reader,
+            'twitter'=>$twitter,
+            'facebook'=>$facebook
+        ), $token);
     }
 
     /**
@@ -175,7 +240,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function getPreferences($token=NULL) {
-        return $this->ExecRequest('/v3/preferences', NULL, $token);
+        return $this->ExecGetRequest('/v3/preferences', NULL, $token);
     }
 
     /**
@@ -184,7 +249,17 @@ class Feedly {
      * @return json   Response from the server
      */
     public function getCategories($token=NULL) {
-        return $this->ExecRequest('/v3/categories', NULL, $token);
+        return $this->ExecGetRequest('/v3/categories', NULL, $token);
+    }
+
+    /**
+     * @see http://developer.feedly.com/v3/categories/#get-the-list-of-all-categories
+     * @param  string $token Access Token in case we don't store it to $_SESSION
+     * @param  string $label Access Token in case we don't store it to $_SESSION
+     * @return json   Response from the server
+     */
+    public function renameCategory($token=NULL, $label) {
+        return $this->ExecPostRequest('/v3/categories', NULL, array('label'=>$label), $token);
     }
 
     /**
@@ -193,7 +268,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function getSubscriptions($token=NULL) {
-        return $this->ExecRequest('/v3/subscriptions', NULL, $token);
+        return $this->ExecGetRequest('/v3/subscriptions', NULL, $token);
     }
 
     /**
@@ -203,7 +278,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function getFeedMetadata($feedId, $token=NULL) {
-        return $this->ExecRequest('/v3/feeds/' . urlencode($feedId),
+        return $this->ExecGetRequest('/v3/feeds/' . urlencode($feedId),
             NULL, $token);
     }
 
@@ -216,7 +291,7 @@ class Feedly {
     public function getStreamContent($streamId, $count=NULL, $ranked=NULL,
         $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) {
 
-        return $this->ExecRequest('/v3/streams/contents',
+        return $this->ExecGetRequest('/v3/streams/contents',
             array(
                 "streamId"=>$streamId,
                 "count"=>$count,
@@ -238,7 +313,7 @@ class Feedly {
     public function getMixes($streamId, $count=NULL, $unreadOnly=NULL,
         $newerThan=NULL, $hours=NULL, $token=NULL) {
 
-        return $this->ExecRequest('/v3/streams/contents',
+        return $this->ExecGetRequest('/v3/streams/contents',
             array(
                 "streamId"=>$streamId,
                 "count"=>$count,
@@ -258,7 +333,7 @@ class Feedly {
     public function getStreamIds($streamId, $count=NULL, $ranked=NULL,
         $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) {
 
-        return $this->ExecRequest('/v3/streams/contents',
+        return $this->ExecGetRequest('/v3/streams/contents',
             array(
                 "streamId"=>$streamId,
                 "count"=>$count,
@@ -276,7 +351,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function getTopics($token=NULL) {
-        return $this->ExecRequest('/v3/topics', NULL, $token);
+        return $this->ExecGetRequest('/v3/topics', NULL, $token);
     }
 
     /**
@@ -285,7 +360,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function getTags($token=NULL) {
-        return $this->ExecRequest('/v3/tags', NULL, $token);
+        return $this->ExecGetRequest('/v3/tags', NULL, $token);
     }
 
     /**
@@ -294,7 +369,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function searchFeeds($q, $n=NULL, $token=NULL) {
-        return $this->ExecRequest('/v3/search/feeds?',
+        return $this->ExecGetRequest('/v3/search/feeds?',
             array(
                 "q"=>$q,
                 "n"=>$n
@@ -310,7 +385,7 @@ class Feedly {
     public function getUnreadCounts($autorefresh=NULL, $newerThan=NULL,
         $streamId=NULL, $token=NULL) {
 
-        return $this->ExecRequest('/v3/markers/counts?autorefresh=',
+        return $this->ExecGetRequest('/v3/markers/counts?autorefresh=',
             array(
                 "autorefresh"=>$autorefresh,
                 "newerThan"=>$newerThan,
