@@ -25,7 +25,7 @@ Constructor:
      * @param boolean $storeAccessTokenToSession Choose whether to store the Access token
      *                                           to $_SESSION or not
      */
-     
+
     $feedly = new Feedly($sandbox=FALSE, $storeAccessTokenToSession=TRUE);
 ```
 
@@ -40,7 +40,7 @@ Constructor:
      * @return string Authorization URL
      */
     $feedly->getLoginUrl($client_id, $redirect_uri,
-        $response_type="code", $scope="https://cloud.feedly.com/subscriptions") 
+        $response_type="code", $scope="https://cloud.feedly.com/subscriptions")
 ```
 
 ```php
@@ -52,7 +52,7 @@ Constructor:
      * @param string $redirect_url  Endpoint to reroute with the results
      */
     $feedly->GetAccessToken($client_id, $client_secret, $auth_code,
-        $redirect_url) 
+        $redirect_url)
 ```
 
 [Get The Profile of The User](http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user)
@@ -61,7 +61,27 @@ Constructor:
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
-    $feedly->getProfile($token=NULL) 
+    $feedly->getProfile($token=NULL)
+```
+
+[Update The Profile of The User](http://developer.feedly.com/v3/profile/#update-the-profile-of-the-user)
+```php
+/**
+     * @param string $email
+     * @param string $givenName
+     * @param string $familyName
+     * @param string $picture
+     * @param boolean $gender
+     * @param string $locale
+     * @param string $reader google reader id
+     * @param string $twitter twitter handle. example: edwk
+     * @param string $facebook facebook id
+     * @param  string $token Access Token in case we don't store it to $_SESSION
+     * @return json Response from the server
+     */
+     $feedly->setProfile($token=NULL, $email=NULL, $givenName=NULL, $familyName=NULL,
+        $picture=NULL, $gender=NULL, $locale=NULL,
+        $reader=NULL, $twitter=NULL, $facebook=NULL)
 ```
 
 [Get The Preferences of The User](http://developer.feedly.com/v3/preferences/#get-the-preferences-of-the-user)
@@ -84,6 +104,17 @@ Constructor:
     $feedly->getCategories($token=NULL)
 ```
 
+[Change The Label Of an Existing Category](http://developer.feedly.com/v3/categories/#change-the-label-of-an-existing-category)
+
+```php
+/**
+     * @param  string $token Access Token in case we don't store it to $_SESSION
+     * @param  string $label Access Token in case we don't store it to $_SESSION
+     * @return json   Response from the server
+     */
+    $feedly->renameCategory($token=NULL, $label)
+```
+
 [Get The Subscriptions of The User](http://developer.feedly.com/v3/subscriptions/#get-the-users-subscriptions)
 
 ```php
@@ -91,7 +122,7 @@ Constructor:
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
-    $feedly->getSubscriptions($token=NULL) 
+    $feedly->getSubscriptions($token=NULL)
 ```
 
 [Get The Metadata About a Specific Feed](http://developer.feedly.com/v3/feeds/#get-the-metadata-about-a-specific-feed)
@@ -102,7 +133,7 @@ Constructor:
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
-    $feedly->getFeedMetadata($feedId, $token=NULL) 
+    $feedly->getFeedMetadata($feedId, $token=NULL)
 ```
 
 [Get The Content of A Stream](http://developer.feedly.com/v3/streams/#get-the-content-of-a-stream)
@@ -114,7 +145,7 @@ Constructor:
      * @return json   Response from the server
      */
     $feedly->getStreamContent($streamId, $count=NULL, $ranked=NULL,
-        $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) 
+        $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL)
 ```
 
 [Get a mix of the most engaging content available in a stream](http://developer.feedly.com/v3/mixes/#get-a-mix-of-the-most-engaging-content-available-in-a-stream)
@@ -126,7 +157,7 @@ Constructor:
      * @return json   Response from the server
      */
     $feedly->getMixes($streamId, $count=NULL, $unreadOnly=NULL,
-        $newerThan=NULL, $hours=NULL, $token=NULL) 
+        $newerThan=NULL, $hours=NULL, $token=NULL)
 ```
 
 [Get a List of Entry IDs For a Specific Stream](http://developer.feedly.com/v3/streams/#get-a-list-of-entry-ids-for-a-specific-stream)
@@ -138,7 +169,7 @@ Constructor:
      * @return json   Response from the server
      */
     $feedly->getStreamIds($streamId, $count=NULL, $ranked=NULL,
-        $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) 
+        $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL)
 ```
 
 [Get The List Of Topics The User Has Added To Their Feedly](http://developer.feedly.com/v3/topics/#get-the-list-of-topics-the-user-has-added-to-their-feedly)
