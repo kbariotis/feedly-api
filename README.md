@@ -5,6 +5,18 @@ PHP wrapper around [Feedly's REST API](http://developer.feedly.com/).
 
 **Under Construction! Not every API's functionality implemented yet.**
 
+
+Notes
+---------------
+Check the [example](https://github.com/stakisko/feedly-api/blob/master/example/index.php) before anything.
+
+If you are working in Sandbox mode of Feedly's API you should know a couple of things.
+
+* Your Client's ID, secret must taken from [here](https://groups.google.com/forum/#!topic/feedly-cloud/a_cGSAzv8bY), which is updated very often so be sure to check it once in while.
+* While in Sandbox mode, only "http://localhost" is permited for callback url. So leave it as is and just replace it every time with your domain, if it's different. You can also add you own to permitted domains [here](https://groups.google.com/forum/#!topic/feedly-cloud/vSo0DuShvDg/discussion).
+* Once you've done developing you can contact Feedly and ask them to put you on [production](http://developer.feedly.com/v3/sandbox/).
+
+
 Instalation
 ---------------
 Add this to your composer.json
