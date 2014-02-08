@@ -12,18 +12,11 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
         $this->instance = new Feedly(true, false);
     }
 
-    /**
-     * Test valid returned URL for authorization
-     */
-    public function testGetLoginURL()
+    public function testValidReturnedUrlForAuthorization()
     {
         $this->assertNotEmpty($this->instance->getLoginUrl("sandbox", "http://localhost"));
     }
 
-    /**
-     * Testing GetAccessToken on failure
-     * will throw exception
-     */
     public function testGetAccessTokenThrowsExceptionOnFailure()
     {
         try {
@@ -35,10 +28,7 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
         $this->fail();
     }
 
-    /**
-     * Testing GetAccessToken
-     */
-    public function testGetAccessToken()
+    public function testReturnedAccessTokenAfterAuthorization()
     {
 
         $json = '
@@ -60,10 +50,7 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
         $this->assertEquals($json, $feedly->GetAccessToken("sandbox", "FUFNPXDNP2J0BF7RCEUZ", "", "http://localhost"));
     }
 
-    /**
-     * Testing a GET Request to API without providing an Access Token
-     * will throw exception
-     */
+
     public function testExecGetRequestWithoutAccessTokenThrowsException(){
         try {
             $this->instance->ExecGetRequest('/v3/profile');
@@ -74,10 +61,7 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
         $this->fail();
     }
 
-    /**
-     * Testing a GET Request to API
-     */
-    public function testExecGetRequest(){
+    public function testValidResponseOnExecGetRequest(){
         $json = '
         {
           "access_token": 1385150462,
@@ -97,10 +81,7 @@ class FeedlyAPITest extends PHPUnit_Framework_TestCase
         $this->assertEquals($json, $feedly->ExecGetRequest("/dum/url"));
     }
 
-    /**
-     * Testing a POST Request to API
-     */
-    public function testExecPostRequest(){
+    public function testValidResponseOnExecPostRequest(){
         $json = '
         {
           "access_token": 1385150462,
