@@ -65,7 +65,7 @@ class Feedly {
         }
 
         curl_setopt($r, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($r, CURLOPT_ENCODING, ALL_SUPPORTED_ENCODING_TYPES);
+        curl_setopt($r, CURLOPT_ENCODING, "");
 
         curl_setopt($r, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($r, CURLOPT_CAINFO, "C:\wamp\bin\apache\Apache2.2.21\cacert.crt");
