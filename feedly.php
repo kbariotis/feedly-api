@@ -108,8 +108,11 @@ class Feedly {
      * @param string $url   URL to query
      * @param string $token Access Token in case we don't store it to $_SESSION
      */
-    private function InitCurl($url, $token=NULL) {
+    private function InitCurl($url, $get_params=NULL, $token=NULL) {
         $r = null;
+
+        if(is_array($get_params))
+            $url = $url . http_build_query($get_params);
 
         if (($r = @curl_init($url)) == false) {
             throw new Exception("Cannot initialize cUrl session.
@@ -117,7 +120,7 @@ class Feedly {
         }
 
         curl_setopt($r, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($r, CURLOPT_ENCODING, ALL_SUPPORTED_ENCODING_TYPES);
+        curl_setopt($r, CURLOPT_ENCODING, "");
 
         curl_setopt($r, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($r, CURLOPT_CAINFO, "C:\wamp\bin\apache\Apache2.2.21\cacert.crt");
@@ -139,15 +142,11 @@ class Feedly {
     public function ExecGetRequest($url, $get_params=NULL, $token=NULL) {
         $url = $this->_apiBaseUrl . $url;
 
-        if(is_array($get_params))
-            $r = $this->InitCurl($url .'?',
-                http_build_query($url, $get_params), $token);
-        else
-            $r = $this->InitCurl($url, $token);
+        $r = $this->InitCurl($url, $get_params, $token);
 
         $response = curl_exec($r);
         if ($response == false) {
-            die("curl_exec() failed. Error: " . curl_error($r));
+            throw new Exception("Communication with the API failed: " . curl_error($r));
         }
 
         $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
@@ -170,20 +169,17 @@ class Feedly {
     public function ExecPostRequest($url, $get_params=NULL, $post_params=NULL, $token=NULL) {
         $url = $this->_apiBaseUrl . $url;
 
-        if(is_array($get_params))
-            $r = $this->InitCurl($url .'?',
-                http_build_query($url, $get_params), $token);
-        else
-            $r = $this->InitCurl($url, $token);
+        $r = $this->InitCurl($url, $get_params, $token);
 
         $post_fields = http_build_query($post_params);
 
         curl_setopt($r, CURLOPT_POST, true);
         curl_setopt($r, CURLOPT_POSTFIELDS, $post_fields);
 
+
         $response = curl_exec($r);
         if ($response == false) {
-            die("curl_exec() failed. Error: " . curl_error($r));
+            throw new Exception("Communication with the API failed: " . curl_error($r));
         }
 
         $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
