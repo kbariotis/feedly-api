@@ -205,13 +205,13 @@ class Feedly {
 
         $post_fields = json_encode($post_params);
 
-	       	curl_setopt($r, CURLOPT_CUSTOMREQUEST, "POST");
-   						curl_setopt($r, CURLOPT_POSTFIELDS, $post_fields);
+          	curl_setopt($r, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($r, CURLOPT_POSTFIELDS, $post_fields);
 
         $access_token = is_null($token) ? $this->_getAccessTokenFromSession() : $token;
         curl_setopt($r, CURLOPT_HTTPHEADER, array (
             "Authorization: OAuth " . $access_token,
-													'Content-Type:	 application/json'
+            'Content-Type: application/json'
         ));
 
         $response = curl_exec($r);
@@ -311,9 +311,9 @@ class Feedly {
      * @param  string $token Access Token in case we don't store it to $_SESSION
      * @return json   Response from the server
      */
-	   public function setSubscription($opts, $token=NULL) {
-				     return $this->ExecPostJSONRequest('/v3/subscriptions', NULL, $opts, $token);
-	   } 
+    public function setSubscription($opts, $token=NULL) {
+        return $this->ExecPostJSONRequest('/v3/subscriptions', NULL, $opts, $token);
+    }
 
 
 
