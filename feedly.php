@@ -191,6 +191,43 @@ class Feedly {
         else
             return $response;
     }
+    /**
+     * Make a POST request using JSON format data rather than standard form encoding
+     * @param string $url        URL to query
+     * @param string $get_params Parameters to pass to URL as GET params
+     * @param string $post_params Parameters to pass to URL as POST params
+     * @param string $token      Access Token in case we don't store it to $_SESSION
+     */
+    public function ExecPostJSONRequest($url, $get_params=NULL, $post_params=NULL, $token=NULL) {
+        $url = $this->_apiBaseUrl . $url;
+
+        $r = $this->InitCurl($url, $get_params, $token);
+
+        $post_fields = json_encode($post_params);
+
+	       	curl_setopt($r, CURLOPT_CUSTOMREQUEST, "POST");
+   						curl_setopt($r, CURLOPT_POSTFIELDS, $post_fields);
+
+        $access_token = is_null($token) ? $this->_getAccessTokenFromSession() : $token;
+        curl_setopt($r, CURLOPT_HTTPHEADER, array (
+            "Authorization: OAuth " . $access_token,
+													'Content-Type:	 application/json'
+        ));
+
+        $response = curl_exec($r);
+        if ($response == false) {
+            throw new Exception("Communication with the API failed: " . curl_error($r));
+        }
+
+        $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
+        $tmpr = json_decode($response, true);
+        curl_close($r);
+
+        if($http_status!==200)
+            throw new Exception("Something went wrong: " . $tmpr['errorMessage']);
+        else
+            return $response;
+    }
 
     /**
      * @see http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user
@@ -218,7 +255,7 @@ class Feedly {
     public function setProfile($token=NULL, $email=NULL, $givenName=NULL, $familyName=NULL,
         $picture=NULL, $gender=NULL, $locale=NULL,
         $reader=NULL, $twitter=NULL, $facebook=NULL) {
-        return $this->ExecPostRequest('/v3/profile', NULL, array(
+        return $this->ExecPostJSONRequest('/v3/profile', NULL, array(
             'email'=>$email,
             'givenName'=>$givenName,
             'familyName'=>$familyName,
@@ -256,7 +293,7 @@ class Feedly {
      * @return json   Response from the server
      */
     public function renameCategory($token=NULL, $label) {
-        return $this->ExecPostRequest('/v3/categories', NULL, array('label'=>$label), $token);
+        return $this->ExecPostJSONRequest('/v3/categories', NULL, array('label'=>$label), $token);
     }
 
     /**
@@ -267,6 +304,18 @@ class Feedly {
     public function getSubscriptions($token=NULL) {
         return $this->ExecGetRequest('/v3/subscriptions', NULL, $token);
     }
+
+    /**
+     * @see http://developer.feedly.com/v3/subscriptions/#subscribe-to-a-feed
+     * @opts Array of subscription options as per the documentation
+     * @param  string $token Access Token in case we don't store it to $_SESSION
+     * @return json   Response from the server
+     */
+	   public function setSubscription($opts, $token=NULL) {
+				     return $this->ExecPostJSONRequest('/v3/subscriptions', NULL, $opts, $token);
+	   } 
+
+
 
     /**
      * @see http://developer.feedly.com/v3/feeds/#get-the-metadata-about-a-specific-feed
