@@ -112,7 +112,7 @@ class Feedly {
         $r = null;
 
         if(is_array($get_params))
-            $url = $url . http_build_query($get_params);
+            $url = $url . '?' . http_build_query($get_params);
 
         if (($r = @curl_init($url)) == false) {
             throw new Exception("Cannot initialize cUrl session.
