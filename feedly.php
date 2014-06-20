@@ -102,6 +102,46 @@ class Feedly {
 
         return $response;
     }
+    
+     public function GetRefreshAccessToken($client_id, $client_secret, $refresh_token) {
+
+        $r = null;
+        if (($r = @curl_init($this->_apiBaseUrl . $this->_accessTokenPath)) == false) {
+            throw new Exception("Cannot initialize cUrl session.
+                Is cUrl enabled for your PHP installation?");
+        }
+
+        curl_setopt($r, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($r, CURLOPT_ENCODING, "");
+
+        curl_setopt($r, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($r, CURLOPT_CAINFO, "C:\wamp\bin\apache\Apache2.2.21\cacert.crt");
+
+        // Add client ID and client secret to the headers.
+        curl_setopt($r, CURLOPT_HTTPHEADER, array (
+            "Authorization: Basic " . base64_encode($client_id . ":" .
+                $client_secret),
+        ));
+
+        $post_fields = "&client_id=" . urlencode($client_id) .
+                "&refresh_token=" . urlencode($refresh_token) .
+            "&client_secret=" . urlencode($client_secret) .
+            "&grant_type=refresh_token";
+
+        curl_setopt($r, CURLOPT_POST, true);
+        curl_setopt($r, CURLOPT_POSTFIELDS, $post_fields);
+
+        $response = curl_exec($r);
+        $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
+        $tmpr = json_decode($response, true);
+        curl_close($r);
+
+        if($http_status!==200)
+            throw new Exception("Response from API: " . $tmpr['errorMessage']);
+
+        return $response;
+    }
+    
 
     /**
      * cUrl Initiliazation
