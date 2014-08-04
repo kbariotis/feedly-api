@@ -87,20 +87,20 @@ class Feedly {
 
         $response = curl_exec($r);
         $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
-        $tmpr = json_decode($response, true);
+        $response = json_decode($response, true);
         curl_close($r);
 
         if($http_status!==200)
-            throw new Exception("Response from API: " . $tmpr['errorMessage']);
+            throw new Exception("Response from API: " . $response['errorMessage']);
 
         if($this->_storeAccessTokenToSession){
             if(!isset($_SESSION['access_token'])){
-                $_SESSION['access_token'] = $tmpr['access_token'];
+                $_SESSION['access_token'] = $response['access_token'];
                 session_write_close();
             }
         }
 
-        return $response;
+        return $response['access_token'];
     }
     
      public function GetRefreshAccessToken($client_id, $client_secret, $refresh_token) {
@@ -133,11 +133,11 @@ class Feedly {
 
         $response = curl_exec($r);
         $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
-        $tmpr = json_decode($response, true);
+        $response = json_decode($response, true);
         curl_close($r);
 
         if($http_status!==200)
-            throw new Exception("Response from API: " . $tmpr['errorMessage']);
+            throw new Exception("Response from API: " . $response['errorMessage']);
 
         return $response;
     }
@@ -190,11 +190,11 @@ class Feedly {
         }
 
         $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
-        $tmpr = json_decode($response, true);
+        $response = json_decode($response, true);
         curl_close($r);
 
         if($http_status!==200)
-            throw new Exception("Something went wrong: " . $tmpr['errorMessage']);
+            throw new Exception("Something went wrong: " . $response['errorMessage']);
         else
             return $response;
     }
@@ -223,11 +223,11 @@ class Feedly {
         }
 
         $http_status = curl_getinfo($r, CURLINFO_HTTP_CODE);
-        $tmpr = json_decode($response, true);
+        $response = json_decode($response, true);
         curl_close($r);
 
         if($http_status!==200)
-            throw new Exception("Something went wrong: " . $tmpr['errorMessage']);
+            throw new Exception("Something went wrong: " . $response['errorMessage']);
         else
             return $response;
     }

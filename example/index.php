@@ -22,17 +22,19 @@ if(isset($_GET['code']))
   /**
    * Response will contain the Access Token
    */
-  echo $feedly->GetAccessToken(
+  $response = $feedly->GetAccessToken(
     "sandbox",
-    "CM786L1D4P3M9VYUPOB8",
+    "YDRYI5E8OP2JKXYSDW79",
     $_GET['code'],
-    "http://localhost"
+    "http://localhost/"
   );
 
   /**
-   * You must update Client's Secret(CM786L1D4P3M9VYUPOB8) once in a while
+   * You must update Client's Secret(YDRYI5E8OP2JKXYSDW79 ) once in a while
    * @see https://groups.google.com/forum/#!topic/feedly-cloud/a_cGSAzv8bY
    */
+	 
+	 var_dump($feedly->getProfile($response));
 }
 else
 {
