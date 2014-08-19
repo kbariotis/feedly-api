@@ -1,0 +1,8 @@
+<phpunit>
+    <testsuites>
+        <testsuite name="feedly">
+            <file>tests/HTTPClientTest.php</file>
+            <file>tests/FeedlyAPIWrapperTest.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
