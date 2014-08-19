@@ -1,8 +1,7 @@
 <phpunit>
     <testsuites>
         <testsuite name="feedly">
-            <file>tests/HTTPClientTest.php</file>
-            <file>tests/FeedlyAPIWrapperTest.php</file>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

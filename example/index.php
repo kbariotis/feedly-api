@@ -46,10 +46,10 @@ if (!isset($_SESSION['access_token'])) {
 
 if (isset($_SESSION['access_token'])) {
 
-    $feedly->setAccessToken($_SESSION['access_token']);
+    $model = $feedly->getEndpoint('Markers', $_SESSION['access_token']);
 
-    $profile = $feedly->getSubscriptions();
+    $response = $model->getUnreadCount();
 
-    var_dump($profile);
+    var_dump($response);
 
 }

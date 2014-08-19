@@ -26,11 +26,21 @@ class Feedly {
     public function __construct($sandbox=FALSE, $storeAccessTokenToSession=TRUE) {
         $this->_storeAccessTokenToSession = $storeAccessTokenToSession;
         if($this->_storeAccessTokenToSession) session_start();
-        if($sandbox) $this->_apiBaseUrl = "https://sandbox.feedly.com";
-
-        $this->_client = new HTTPClient();
     }
 
+    public function getEndpoint($name, $token)
+    {
+        $className = __NAMESPACE__ . '\\Models\\' . $name;
+
+        if (!class_exists($className)) {
+            throw new \InvalidArgumentException("$name is not valid endpoint for Feedly API");
+        }
+
+        $class = new $className($token);
+        $class->setApiBaseUrl("https://sandbox.feedly.com");
+
+        return $class;
+    }
     /**
      * Return authorization URL
      * @param string $client_id     Client's ID provided by Feedly's Administrators
@@ -52,15 +62,6 @@ class Feedly {
                 )
             )
         );
-    }
-
-    public function setAccessToken($token) {
-        $this->_access_token = $token;
-
-        $this->_client->setCustomHeader(array(
-            "Authorization: OAuth " . $this->_access_token,
-            'Content-Type: application/json'
-        ));
     }
 
     /**
@@ -126,42 +127,6 @@ class Feedly {
          }
 
          if (isset($response['access_token'])) return $response['access_token'];
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user
-     * @param string $token Access Token in case we don't store it to $_SESSION
-     * @return json Response from the server
-     */
-    public function getProfile() {
-        return $this->_client->get($this->_apiBaseUrl . '/v3/profile');
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/profile/#update-the-profile-of-the-user
-     * @param string $email
-     * @param string $givenName
-     * @param string $familyName
-     * @param string $picture
-     * @param boolean $gender
-     * @param string $locale
-     * @param string $reader google reader id
-     * @param string $twitter twitter handle. example: edwk
-     * @param string $facebook facebook id
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json Response from the server
-     */
-    public function setProfile($email=NULL, $givenName=NULL, $familyName=NULL,
-        $picture=NULL, $gender=NULL, $locale=NULL,
-        $reader=NULL, $twitter=NULL, $facebook=NULL) {
-
-        //$this->_client->setPostParamsEncType("application/json");
-        $this->_client->setPostParams(array(
-                'twitter'=>$email
-            )
-        );
-
-        return $this->_client->post($this->_apiBaseUrl . '/v3/profile');
     }
 
     /**

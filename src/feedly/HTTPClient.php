@@ -73,8 +73,17 @@ class HTTPClient {
     public function post($url) {
 
         curl_setopt($this->_ch, CURLOPT_URL, $url);
-        //curl_setopt($this->_ch, CURLOPT_POST, true);
         curl_setopt($this->_ch, CURLOPT_CUSTOMREQUEST, "POST");
+
+        $response = $this->exec();
+
+        return $this->checkResponse($response);
+    }
+
+    public function delete($url) {
+
+        curl_setopt($this->_ch, CURLOPT_URL, $url);
+        curl_setopt($this->_ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 
         $response = $this->exec();
 
@@ -97,7 +106,8 @@ class HTTPClient {
         $response = json_decode($response, true);
 
         if($httpStatus!==200){
-            throw new \Exception("Something went wrong: " . $response['errorMessage']);
+            throw new \Exception("Something went wrong: " . $response['errorMessage'] . ' : ' .
+                $response['errorCode']);
         }
 
         return $response;
