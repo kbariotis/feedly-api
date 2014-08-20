@@ -18,8 +18,39 @@ class Markers extends FeedlyModel{
         return $this->getClient()->get($this->getApiBaseUrl() . $this->getEndpoint() . '/counts');
     }
 
-    public function markAsRead($body) {
-        $this->setOptions($body);
+    public function markArticleAsRead($body) {
+        $this->setOptions(array(
+            'action' => 'markAsRead',
+            'entryIds' => $body,
+            'type' => 'entries'
+        ));
+        return $this->getClient()->post($this->getApiBaseUrl() . $this->getEndpoint());
+    }
+
+    public function markArticleAsUnread($body) {
+        $this->setOptions(array(
+            'action' => 'keepUnread',
+            'entryIds' => $body,
+            'type' => 'entries'
+        ));
+        return $this->getClient()->post($this->getApiBaseUrl() . $this->getEndpoint());
+    }
+
+    public function markFeedAsRead($body) {
+        $this->setOptions(array(
+            'action' => 'markAsRead',
+            'feedIds' => $body,
+            'type' => 'feeds'
+        ));
+        return $this->getClient()->post($this->getApiBaseUrl() . $this->getEndpoint());
+    }
+
+    public function markCategoryAsRead($body) {
+        $this->setOptions(array(
+            'action' => 'markAsRead',
+            'feedIds' => $body,
+            'type' => 'categories'
+        ));
         return $this->getClient()->post($this->getApiBaseUrl() . $this->getEndpoint());
     }
 
