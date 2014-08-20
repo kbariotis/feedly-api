@@ -4,6 +4,7 @@ PHP wrapper around [Feedly's REST API](http://developer.feedly.com/).
 
 **Under Construction! Not every API's functionality implemented yet.**
 
+[![Build Status](https://travis-ci.org/stakisko/feedly-api.svg?branch=dev)](https://travis-ci.org/stakisko/feedly-api)
 
 Notes
 -----
