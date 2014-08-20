@@ -1,14 +1,13 @@
 feedly-api
-==========
-
+=========
 PHP wrapper around [Feedly's REST API](http://developer.feedly.com/).
 
 **Under Construction! Not every API's functionality implemented yet.**
 
 
 Notes
----------------
-Check the [example](https://github.com/stakisko/feedly-api/blob/master/example/index.php) before anything.
+-----
+Check the [examples](https://github.com/stakisko/feedly-api/blob/master/example) before anything.
 
 If you are working in Sandbox mode of Feedly's API you should know a couple of things.
 
@@ -18,7 +17,7 @@ If you are working in Sandbox mode of Feedly's API you should know a couple of t
 
 
 Instalation
----------------
+-----------
 Add this to your composer.json
 ```
 "require": {
@@ -29,200 +28,94 @@ Add this to your composer.json
 Or download the [ZIP](https://github.com/stakisko/feedly-api/archive/master.zip).
 
 Documentation
----------
-Constructor:
-```php
-    /**
-     * @param boolean $sandbox                   Enable/Disable Sandbox Mode
-     * @param boolean $storeAccessTokenToSession Choose whether to store the Access token
-     *                                           to $_SESSION or not
-     */
+-------------
 
-    $feedly = new Feedly($sandbox=FALSE, $storeAccessTokenToSession=TRUE);
+**Constructor:**
+
+```php
+$sandbox=FALSE;
+$storeAccessTokenToSession=TRUE;
+
+$feedly = new Feedly($sandbox, $storeAccessTokenToSession);
 ```
 
+Authentication:
+--------------
+
+Check the [example](https://github.com/stakisko/feedly-api/blob/master/example/authentication.php).
+
+Note that not every Feedly actions need authentication. Passing a token is optional.
+
+Endpoints
+-------------
+
+[**Profile:**](http://developers.feedly.com/v3/profile/)
+
 ```php
-    /**
-     * Return authorization URL
-     * @param string $client_id     Client's ID provided by Feedly's Administrators
-     * @param string $redirect_uri  Endpoint to reroute with the results
-     * @param string $response_type
-     * @param string $scope
-     *
-     * @return string Authorization URL
-     */
-    $feedly->getLoginUrl($client_id, $redirect_uri,
-        $response_type="code", $scope="https://cloud.feedly.com/subscriptions")
+
+    $profile = $feedly->getEndpoint('Profile');
+
+    var_dump($profile->fetch());
+
+    $profile->setOptions(array(
+        'email'=>'odysseus@ithaca.gr'
+    ));
+
+    $profile->persist();
 ```
 
+[**Categories:**](http://developers.feedly.com/v3/categories/)
+
 ```php
-    /**
-     * Exchange a `code` got from `getLoginUrl` for an `Access Token`
-     * @param string $client_id     Client's ID provided by Feedly's Administrators
-     * @param string $client_secret Client's Secret provided by Feedly's Administrators
-     * @param string $auth_code     Code obtained from `getLoginUrl`
-     * @param string $redirect_url  Endpoint to reroute with the results
-     */
-    $feedly->GetAccessToken($client_id, $client_secret, $auth_code,
-        $redirect_url)
+
+    $categories = $feedly->getEndpoint('Categories');
+
+    var_dump($categories->fetch());
+
+    $categories->changeLabel($id, 'New Label');
+
+    $categories->delete($id);
 ```
 
-[Get The Profile of The User](http://developer.feedly.com/v3/profile/#get-the-profile-of-the-user)
+[**Entries:**](http://developers.feedly.com/v3/entries/)
+
 ```php
-/**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getProfile($token=NULL)
+
+    $entries = $feedly->getEndpoint('Entries');
+
+    var_dump($entries->get($id));
+
 ```
 
-[Update The Profile of The User](http://developer.feedly.com/v3/profile/#update-the-profile-of-the-user)
-```php
-/**
-     * @param string $email
-     * @param string $givenName
-     * @param string $familyName
-     * @param string $picture
-     * @param boolean $gender
-     * @param string $locale
-     * @param string $reader google reader id
-     * @param string $twitter twitter handle. example: edwk
-     * @param string $facebook facebook id
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json Response from the server
-     */
-     $feedly->setProfile($token=NULL, $email=NULL, $givenName=NULL, $familyName=NULL,
-        $picture=NULL, $gender=NULL, $locale=NULL,
-        $reader=NULL, $twitter=NULL, $facebook=NULL)
-```
-
-[Get The Preferences of The User](http://developer.feedly.com/v3/preferences/#get-the-preferences-of-the-user)
+[**Markers:**](http://developers.feedly.com/v3/markers/)
 
 ```php
-    /**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getPreferences($token=NULL)
-```
 
-[Get The List Of All Categories](http://developer.feedly.com/v3/categories/#get-the-list-of-all-categories)
+    $markers = $feedly->getEndpoint('Markers');
 
-```php
-    /**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getCategories($token=NULL)
-```
+    var_dump($markers->get($id));
 
-[Change The Label Of an Existing Category](http://developer.feedly.com/v3/categories/#change-the-label-of-an-existing-category)
+    var_dump($markers->getUnreadCount());
 
-```php
-/**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @param  string $label Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->renameCategory($token=NULL, $label)
-```
+    $markers->markArticleAsRead(array(
+        'TSxGHgRh4oAiHxRU9TgPrpYvYVBPjipkmUVSHGYCTY0=_14499073085:c034:d32dab1f',
+        'TSxGHgRh4oAiHxRU9TgPrpYvYVBPjipkmUVSHGYCTY0=_1449255d60a:22c3491:9c6d71ab'
+    ));
 
-[Get The Subscriptions of The User](http://developer.feedly.com/v3/subscriptions/#get-the-users-subscriptions)
+    $markers->markArticleAsUnread(array(
+        'TSxGHgRh4oAiHxRU9TgPrpYvYVBPjipkmUVSHGYCTY0=_14499073085:c034:d32dab1f',
+        'TSxGHgRh4oAiHxRU9TgPrpYvYVBPjipkmUVSHGYCTY0=_1449255d60a:22c3491:9c6d71ab'
+    ));
 
-```php
-    /**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getSubscriptions($token=NULL)
-```
+    $markers->markFeedAsUnread(array(
+        'feed/http://feeds.feedburner.com/design-milk'
+    ));
 
-[Get The Metadata About a Specific Feed](http://developer.feedly.com/v3/feeds/#get-the-metadata-about-a-specific-feed)
+    $markers->markFeedAsUnread(array(
+        'user/c805fcbf-3acf-4302-a97e-d82f9d7c897f/category/design',
+        'user/c805fcbf-3acf-4302-a97e-d82f9d7c897f/category/photography'
+    ));
 
-```php
-    /**
-     * @param  string $feedId Feed's ID
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getFeedMetadata($feedId, $token=NULL)
-```
-
-[Get The Content of A Stream](http://developer.feedly.com/v3/streams/#get-the-content-of-a-stream)
-
-```php
-    /**
-     * @param  string $streamId Stream's ID
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getStreamContent($streamId, $count=NULL, $ranked=NULL,
-        $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL)
-```
-
-[Get a mix of the most engaging content available in a stream](http://developer.feedly.com/v3/mixes/#get-a-mix-of-the-most-engaging-content-available-in-a-stream)
-
-```php
-    /**
-     * @param  string $streamId Stream's ID
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getMixes($streamId, $count=NULL, $unreadOnly=NULL,
-        $newerThan=NULL, $hours=NULL, $token=NULL)
-```
-
-[Get a List of Entry IDs For a Specific Stream](http://developer.feedly.com/v3/streams/#get-a-list-of-entry-ids-for-a-specific-stream)
-
-```php
-    /**
-     * @param  string $streamId Stream's ID
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getStreamIds($streamId, $count=NULL, $ranked=NULL,
-        $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL)
-```
-
-[Get The List Of Topics The User Has Added To Their Feedly](http://developer.feedly.com/v3/topics/#get-the-list-of-topics-the-user-has-added-to-their-feedly)
-
-```php
-    /**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getTopics($token=NULL)
-```
-
-[Get The List Of Tags Created By The User.](http://developer.feedly.com/v3/tags/#get-the-list-of-tags-created-by-the-user)
-
-```php
-    /**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-   $feedly->getTags($token=NULL)
-```
-
-[Find Feeds Based On Title, Url Or #topichttp://developer.feedly.com/](http://developer.feedly.com/v3/search/#find-feeds-based-on-title-url-or-topichttpdeveloperfeedlycom)
-
-```php
-    /**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->searchFeeds($q, $n=NULL, $token=NULL)
-```
-
-[Get The List Of Onread Counts](http://developer.feedly.com/v3/markers/#get-the-list-of-unread-counts)
-
-```php
-    /**
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    $feedly->getUnreadCounts($autorefresh=NULL, $newerThan=NULL,
-        $streamId=NULL, $token=NULL)
 ```
 
 Licence
