@@ -38,11 +38,14 @@ class HTTPClient {
         $this->_postParams = $params;
     }
 
-    public function setPostParams($params) {
+    public function setPostParams($params, $json=true) {
 
         $this->_postParams = $params;
 
-        curl_setopt($this->_ch, CURLOPT_POSTFIELDS, json_encode($this->_postParams));
+        if($json)
+            curl_setopt($this->_ch, CURLOPT_POSTFIELDS, json_encode($this->_postParams));
+        else
+            curl_setopt($this->_ch, CURLOPT_POSTFIELDS, http_build_query($this->_postParams));
     }
 
     public function setPostParamsEncType($enctype) {

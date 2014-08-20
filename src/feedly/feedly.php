@@ -12,7 +12,7 @@ namespace feedly;
 class Feedly {
     private
         $_client,
-        $_access_token,
+        $_sandboxMode,
         $_apiBaseUrl = "https://cloud.feedly.com",
         $_authorizePath = "/v3/auth/auth",
         $_accessTokenPath = "/v3/auth/token",
@@ -24,7 +24,11 @@ class Feedly {
      *                                           to $_SESSION or not
      */
     public function __construct($sandbox=FALSE, $storeAccessTokenToSession=TRUE) {
+
         $this->_storeAccessTokenToSession = $storeAccessTokenToSession;
+        $this->_sandboxMode = $sandbox;
+
+        if($this->_sandboxMode) $this->_apiBaseUrl = "https://sandbox.feedly.com";
         if($this->_storeAccessTokenToSession) session_start();
     }
 
@@ -37,7 +41,7 @@ class Feedly {
         }
 
         $class = new $className($token);
-        $class->setApiBaseUrl("https://sandbox.feedly.com");
+        if($this->_sandboxMode) $class->setApiBaseUrl("https://sandbox.feedly.com");
 
         return $class;
     }
@@ -74,30 +78,24 @@ class Feedly {
     public function getAccessToken($client_id, $client_secret, $auth_code,
         $redirect_url) {
 
+        $this->_client = new HTTPClient();
 
         $this->_client->setCustomHeader(array (
             "Authorization: Basic " . base64_encode($client_id . ":" .
                 $client_secret),
         ));
 
-        $this->_client->setPostParams($post_fields = "code=" . urlencode($auth_code) .
-            "&client_id=" . urlencode($client_id) .
-            "&client_secret=" . urlencode($client_secret) .
-            "&redirect_uri=" . urlencode($redirect_url) .
-            "&grant_type=authorization_code");
+        $this->_client->setPostParams(array(
+            "code" => urlencode($auth_code),
+            "client_id" => urlencode($client_id),
+            "client_secret" => urlencode($client_secret),
+            "redirect_uri" => $redirect_url,
+            "grant_type" => "authorization_code")
+            , false);
 
-        $response = '';
-        try{
-            $response = $this->_client->post($this->_apiBaseUrl . $this->_accessTokenPath);
-        }catch(\Exception $e) {}
+        $response = $this->_client->post($this->_apiBaseUrl . $this->_accessTokenPath);
 
-
-        if($this->_storeAccessTokenToSession){
-            if(isset($response['access_token'])) {
-                $_SESSION['access_token'] = $response['access_token'];
-                session_write_close();
-            }
-        }
+        $this->storeAccessTokenToSession($response);
 
         if(isset($response['access_token'])) return $response['access_token'];
     }
@@ -109,201 +107,32 @@ class Feedly {
                  $client_secret),
          ));
 
-         $this->_client->setPostParams("&client_id=" . urlencode($client_id) .
-            "&refresh_token=" . urlencode($refresh_token) .
-            "&client_secret=" . urlencode($client_secret) .
-            "&grant_type=refresh_token");
+        $this->_client->setPostParams(array(
+                "refresh_token" => urlencode($refresh_token),
+                "client_secret" => urlencode($client_secret),
+                "grant_type" => $refresh_token)
+            , false);
 
+         $response = $this->_client->post($this->_apiBaseUrl . $this->_accessTokenPath);
 
-         $response = '';
-         try {
-             $response = $this->_client->post($this->_apiBaseUrl . $this->_accessTokenPath);
-         } catch (\Exception $e) {
-         }
-
-         if ($this->_storeAccessTokenToSession) {
-             $_SESSION['access_token'] = $response['access_token'];
-             session_write_close();
-         }
+         $this->storeAccessTokenToSession($response);
 
          if (isset($response['access_token'])) return $response['access_token'];
     }
 
-    /**
-     * @see http://developer.feedly.com/v3/preferences/#get-the-preferences-of-the-user
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getPreferences() {
-        return $this->_client->get($this->_apiBaseUrl . '/v3/preferences');
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/categories/#get-the-list-of-all-categories
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getCategories() {
-        return $this->_client->get($this->_apiBaseUrl . '/v3/categories');
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/categories/#change-the-label-of-an-existing-category
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @param  string $label Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function renameCategory($token=NULL, $label) {
-        return $this->ExecPostJSONRequest('/v3/categories', NULL, array('label'=>$label), $token);
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/subscriptions/#get-the-users-subscriptions
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getSubscriptions() {
-        return $this->_client->get($this->_apiBaseUrl . '/v3/subscriptions');
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/subscriptions/#subscribe-to-a-feed
-     * @opts Array of subscription options as per the documentation
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function setSubscription($opts) {
-        $this->_client->setPostParamsEncType("application/json");
-
-        $this->_client->setPostParams($opts);
-
-        return $this->_client->post('/v3/subscriptions');
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/feeds/#get-the-metadata-about-a-specific-feed
-     * @param  string $feedId Feed's ID
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getFeedMetadata($feedId, $token=NULL) {
-        return $this->_client->post('/v3/feeds/' . urlencode($feedId));
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/streams/#get-the-content-of-a-stream
-     * @param  string $streamId Stream's ID
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getStreamContent($streamId, $count=NULL, $ranked=NULL,
-        $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) {
-
-        $this->_client->setGetParams(array(
-            "streamId"=>$streamId,
-            "count"=>$count,
-            "ranked"=>$ranked,
-            "unreadOnly"=>$unreadOnly,
-            "newerThan"=>$newerThan,
-            "continuation"=>$continuation
-        ));
-        return $this->_client->get($this->_apiBaseUrl . '/v3/streams/contents');
-
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/profile/
-     * @param  string $streamId Stream's ID
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getMixes($streamId, $count=NULL, $unreadOnly=NULL,
-        $newerThan=NULL, $hours=NULL, $token=NULL) {
-
-        return $this->ExecGetRequest('/v3/streams/contents',
-            array(
-                "streamId"=>$streamId,
-                "count"=>$count,
-                "hours"=>$hours,
-                "unreadOnly"=>$unreadOnly,
-                "newerThan"=>$newerThan
-            ), $token
-        );
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/profile/
-     * @param  string $streamId Stream's ID
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getStreamIds($streamId, $count=NULL, $ranked=NULL,
-        $unreadOnly=NULL, $newerThan=NULL, $continuation=NULL, $token=NULL) {
-
-        return $this->ExecGetRequest('/v3/streams/contents',
-            array(
-                "streamId"=>$streamId,
-                "count"=>$count,
-                "ranked"=>$ranked,
-                "unreadOnly"=>$unreadOnly,
-                "newerThan"=>$newerThan,
-                "continuation"=>$continuation
-            ), $token
-        );
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/profile/
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getTopics() {
-        return $this->_client->get($this->_apiBaseUrl . '/v3/topics');
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/profile/
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getTags() {
-        return $this->_client->get($this->_apiBaseUrl . '/v3/tags');
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/profile/
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function searchFeeds($queryToSearch, $n=NULL) {
-        $this->_client->setGetParams(array(
-            "q"=>$queryToSearch,
-            "n"=>$n
-        ));
-        return $this->_client->get($this->_apiBaseUrl . '/v3/search/feeds?');
-    }
-
-    /**
-     * @see http://developer.feedly.com/v3/profile/
-     * @param  string $token Access Token in case we don't store it to $_SESSION
-     * @return json   Response from the server
-     */
-    public function getUnreadCounts($autorefresh=NULL, $newerThan=NULL,
-        $streamId=NULL, $token=NULL) {
-
-        $this->_client->setGetParams(array(
-            "autorefresh"=>$autorefresh,
-            "newerThan"=>$newerThan,
-            "streamId"=>$streamId,
-        ));
-
-        return $this->_client->get($this->_apiBaseUrl . '/v3/markers/counts?autorefresh=');
+    private function storeAccessTokenToSession($response) {
+        if($this->_storeAccessTokenToSession){
+            if(isset($response['access_token'])) {
+                $_SESSION['access_token'] = $response['access_token'];
+                session_write_close();
+            }
+        }
     }
 
     /**
      * @return string Access Token from $_SESSION
      */
-    protected function _getAccessTokenFromSession(){
+    private function getAccessTokenFromSession(){
         if(isset($_SESSION['access_token'])){
             return $_SESSION['access_token'];
         }else {
