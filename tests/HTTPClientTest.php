@@ -7,7 +7,40 @@ use feedly\HTTPClient;
 class HTTPClientTest extends PHPUnit_Framework_TestCase
 {
 
-    public function testGetMethod() {
+    /**
+     * @expectedException Exception
+     */
+    public function testGetFailure() {
+        // Create a stub for the SomeClass class.
+        $client = new HTTPClient();
+
+        $client->get('nonexistentsite');
+
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testPostFailure() {
+        // Create a stub for the SomeClass class.
+        $client = new HTTPClient();
+
+        $client->post('nonexistentsite');
+
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testDeleteFailure() {
+        // Create a stub for the SomeClass class.
+        $client = new HTTPClient();
+
+        $client->delete('nonexistentsite');
+
+    }
+
+    public function testGetResponse() {
         // Create a stub for the SomeClass class.
         $client = $this->getMock('HTTPClient', array('get'));
 
@@ -21,7 +54,7 @@ class HTTPClientTest extends PHPUnit_Framework_TestCase
 
     }
 
-    public function testPostMethod() {
+    public function testPostResponse() {
         // Create a stub for the SomeClass class.
         $client = $this->getMock('HTTPClient', array('post'));
 

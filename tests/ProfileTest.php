@@ -17,7 +17,7 @@ class ProfileTest extends PHPUnit_Framework_TestCase
     public function testResponseOnFetch()
     {
 
-        $json = array(
+        $response = array(
             'email' => 'john@doe.com'
         );
 
@@ -25,15 +25,15 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 
         $feedly->expects($this->any())
              ->method('fetch')
-             ->will($this->returnValue($json));
+             ->will($this->returnValue($response));
 
-        $this->assertEquals($json, $feedly->fetch());
+        $this->assertEquals($response, $feedly->fetch());
     }
 
     public function testResponseOnPersist()
     {
 
-        $json = array(
+        $response = array(
             'email' => 'john@doe.com'
         );
 
@@ -41,8 +41,8 @@ class ProfileTest extends PHPUnit_Framework_TestCase
 
         $feedly->expects($this->any())
             ->method('persist')
-            ->will($this->returnValue($json));
+            ->will($this->returnValue($response));
 
-        $this->assertEquals($json, $feedly->persist());
+        $this->assertEquals($response, $feedly->persist());
     }
 }

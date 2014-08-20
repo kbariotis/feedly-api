@@ -17,6 +17,18 @@ class FeedlyModelTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException Exception
      */
+    public function testNoTokenFailure() {
+
+        $client = new FeedlyModel('SOMETOKEN');
+        $client->setEndpoint('/v3/profile');
+        $client->setOptions(array('email'=>'odysseus'));
+
+        $client->persist();
+    }
+
+    /**
+     * @expectedException Exception
+     */
     public function testFetchFailureOnEmptyEndpoint() {
 
         $client = new FeedlyModel('SOMETOKEN');
