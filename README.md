@@ -1,3 +1,6 @@
+**NOTICE** You are free to test [dev](https://github.com/stakisko/feedly-api/tree/dev) branch. I have added tests, refactor the code and make it more easily extensible. Thank you all for your contributions.
+
+
 feedly-api
 ==========
 
