@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require dirname(__FILE__) . "/../vendor/autoload.php";
 
 /**
@@ -25,7 +28,7 @@ if (isset($_GET['code'])) {
      */
     $token = $feedly->getAccessToken(
         "sandbox",
-        "YDRYI5E8OP2JKXYSDW79",
+        "A0SXFX54S3K0OC9GNCXG",
         $_GET['code'],
         "http://localhost/"
     );
@@ -43,5 +46,5 @@ if (!isset($_SESSION['access_token'])) {
      * After redirection replace "localhost" with your domain
      * keeping the Auth Code GET param
      */
-    echo "<a href=\"$loginUrl\">Authenticate using Feedly</a>";
+    echo "<a href=\"" . $loginUrl . "\">Authenticate using Feedly</a>";
 }
