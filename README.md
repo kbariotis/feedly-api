@@ -43,17 +43,15 @@ $storeAccessTokenToSession=TRUE;
 $feedly = new Feedly($sandbox, $storeAccessTokenToSession);
 ```
 
-Authentication:
---------------
+**Authentication:**
 
 Check the [example](https://github.com/stakisko/feedly-api/blob/master/example/authentication.php).
 
 Note that not every Feedly actions need authentication. Passing a token is optional.
 
-Endpoints
--------------
+**Endpoints**
 
-[**Profile:**](http://developers.feedly.com/v3/profile/)
+[Profile:](http://developers.feedly.com/v3/profile/)
 
 ```php
 
@@ -68,7 +66,7 @@ Endpoints
     $profile->persist();
 ```
 
-[**Categories:**](http://developers.feedly.com/v3/categories/)
+[Categories:](http://developers.feedly.com/v3/categories/)
 
 ```php
 
@@ -81,7 +79,7 @@ Endpoints
     $categories->delete($id);
 ```
 
-[**Entries:**](http://developers.feedly.com/v3/entries/)
+[Entries:](http://developers.feedly.com/v3/entries/)
 
 ```php
 
@@ -91,7 +89,7 @@ Endpoints
 
 ```
 
-[**Markers:**](http://developers.feedly.com/v3/markers/)
+[Markers:](http://developers.feedly.com/v3/markers/)
 
 ```php
 
@@ -121,6 +119,14 @@ Endpoints
     ));
 
 ```
+
+Contribute
+-------------
+* Create a branch
+* Add your models [here](src/feedly/Models)
+* Run tests with `phpunit`
+* Make a Pull Request
+
 
 Licence
 --------------------
