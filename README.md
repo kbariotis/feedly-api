@@ -89,7 +89,7 @@ Note that not every Feedly actions need authentication. Passing a token is optio
 
 ```
 
-[Entries:](http://developers.feedly.com/v3/streams/)
+[Streams:](http://developers.feedly.com/v3/streams/)
 
 ```php
 
