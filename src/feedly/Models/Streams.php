@@ -2,7 +2,7 @@
 
 namespace feedly\Models;
 
-class Stream extends FeedlyModel{
+class Streams extends FeedlyModel{
 
     public function __construct($token) {
         parent::__construct($token);
@@ -10,8 +10,8 @@ class Stream extends FeedlyModel{
         $this->setEndpoint('/v3/streams');
     }
 
-    public function get($pk,$data = "ids") {
-        return $this->getClient()->get($this->getApiBaseUrl() . $this->getEndpoint() . '/' .$data.'?streamId='.urlencode($pk));
+    public function get($ids,$data = "ids") {
+        return $this->getClient()->get($this->getApiBaseUrl() . $this->getEndpoint() . '/' .$data.'?streamId='.urlencode($ids));
     }
 
 }
