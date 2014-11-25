@@ -89,6 +89,20 @@ Note that not every Feedly actions need authentication. Passing a token is optio
 
 ```
 
+[Entries:](http://developers.feedly.com/v3/streams/)
+
+```php
+
+    $streams = $feedly->getEndpoint('Streams');
+    
+    //Retrieve ids from stream 
+    var_dump($stream->get($id,"ids"));
+    
+    //Retrieve contents from stream 
+    var_dump($stream->get($id,"contents"));
+
+```
+
 [Markers:](http://developers.feedly.com/v3/markers/)
 
 ```php
