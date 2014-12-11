@@ -6,7 +6,6 @@ class HTTPClient
 {
 
     private
-        $_token,
         $_getParams,
         $_postParams,
         $_ch;
@@ -14,7 +13,9 @@ class HTTPClient
 
     public function __construct()
     {
-        if (($this->_ch = @curl_init()) == false) {
+        try {
+            $this->_ch = curl_init();
+        } catch (\Exception $e) {
             throw new \Exception("Cannot initialize cUrl handler. Is cUrl enabled?");
         }
 
@@ -129,6 +130,5 @@ class HTTPClient
 
         return $response;
     }
-
 
 }
