@@ -10,7 +10,8 @@ class HTTPClientTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException Exception
      */
-    public function testGetFailure() {
+    public function testGetFailure()
+    {
         // Create a stub for the SomeClass class.
         $client = new HTTPClient();
 
@@ -21,7 +22,8 @@ class HTTPClientTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException Exception
      */
-    public function testPostFailure() {
+    public function testPostFailure()
+    {
         // Create a stub for the SomeClass class.
         $client = new HTTPClient();
 
@@ -32,7 +34,8 @@ class HTTPClientTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException Exception
      */
-    public function testDeleteFailure() {
+    public function testDeleteFailure()
+    {
         // Create a stub for the SomeClass class.
         $client = new HTTPClient();
 
@@ -40,29 +43,31 @@ class HTTPClientTest extends PHPUnit_Framework_TestCase
 
     }
 
-    public function testGetResponse() {
+    public function testGetResponse()
+    {
         // Create a stub for the SomeClass class.
         $client = $this->getMock('HTTPClient', array('get'));
 
         // Configure the stub.
         $client->expects($this->once())
-            ->method('get')
-            ->with($this->equalTo('http://kostasbariotis.com'))
-            ->will($this->returnValue(TRUE));
+               ->method('get')
+               ->with($this->equalTo('http://kostasbariotis.com'))
+               ->will($this->returnValue(true));
 
         $this->assertTrue($client->get('http://kostasbariotis.com'));
 
     }
 
-    public function testPostResponse() {
+    public function testPostResponse()
+    {
         // Create a stub for the SomeClass class.
         $client = $this->getMock('HTTPClient', array('post'));
 
         // Configure the stub.
         $client->expects($this->once())
-            ->method('post')
-            ->with($this->equalTo('http://kostasbariotis.com'))
-            ->will($this->returnValue(TRUE));
+               ->method('post')
+               ->with($this->equalTo('http://kostasbariotis.com'))
+               ->will($this->returnValue(true));
 
         $this->assertTrue($client->post('http://kostasbariotis.com'));
 

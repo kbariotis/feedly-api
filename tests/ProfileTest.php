@@ -7,7 +7,8 @@ use feedly\Models\Profile;
 class ProfileTest extends PHPUnit_Framework_TestCase
 {
 
-    public function testInitialization() {
+    public function testInitialization()
+    {
 
         $model = new Profile('SOMETOKEN');
 
@@ -24,8 +25,8 @@ class ProfileTest extends PHPUnit_Framework_TestCase
         $feedly = $this->getMock('Profile', array('fetch'));
 
         $feedly->expects($this->any())
-             ->method('fetch')
-             ->will($this->returnValue($response));
+               ->method('fetch')
+               ->will($this->returnValue($response));
 
         $this->assertEquals($response, $feedly->fetch());
     }
@@ -40,8 +41,8 @@ class ProfileTest extends PHPUnit_Framework_TestCase
         $feedly = $this->getMock('Profile', array('persist'));
 
         $feedly->expects($this->any())
-            ->method('persist')
-            ->will($this->returnValue($response));
+               ->method('persist')
+               ->will($this->returnValue($response));
 
         $this->assertEquals($response, $feedly->persist());
     }

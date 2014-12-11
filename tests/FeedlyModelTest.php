@@ -7,7 +7,8 @@ use feedly\Models\FeedlyModel;
 class FeedlyModelTest extends PHPUnit_Framework_TestCase
 {
 
-    public function testShouldInitializeHTTPClient() {
+    public function testShouldInitializeHTTPClient()
+    {
 
         $client = new FeedlyModel('SOMETOKEN');
 
@@ -17,11 +18,12 @@ class FeedlyModelTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException Exception
      */
-    public function testNoTokenFailure() {
+    public function testNoTokenFailure()
+    {
 
         $client = new FeedlyModel('SOMETOKEN');
         $client->setEndpoint('/v3/profile');
-        $client->setOptions(array('email'=>'odysseus'));
+        $client->setOptions(array('email' => 'odysseus'));
 
         $client->persist();
     }
@@ -29,7 +31,8 @@ class FeedlyModelTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException Exception
      */
-    public function testFetchFailureOnEmptyEndpoint() {
+    public function testFetchFailureOnEmptyEndpoint()
+    {
 
         $client = new FeedlyModel('SOMETOKEN');
 
@@ -39,7 +42,8 @@ class FeedlyModelTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException Exception
      */
-    public function testPersistFailureOnEmptyEndpoint() {
+    public function testPersistFailureOnEmptyEndpoint()
+    {
 
         $client = new FeedlyModel('SOMETOKEN');
 
@@ -56,8 +60,8 @@ class FeedlyModelTest extends PHPUnit_Framework_TestCase
         $feedly = $this->getMock('FeedlyModel', array('fetch'));
 
         $feedly->expects($this->any())
-            ->method('fetch')
-            ->will($this->returnValue($json));
+               ->method('fetch')
+               ->will($this->returnValue($json));
 
         $this->assertEquals($json, $feedly->fetch());
     }
@@ -72,8 +76,8 @@ class FeedlyModelTest extends PHPUnit_Framework_TestCase
         $feedly = $this->getMock('FeedlyModel', array('persist'));
 
         $feedly->expects($this->any())
-            ->method('persist')
-            ->will($this->returnValue($json));
+               ->method('persist')
+               ->will($this->returnValue($json));
 
         $this->assertEquals($json, $feedly->persist());
     }

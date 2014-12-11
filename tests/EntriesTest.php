@@ -7,14 +7,16 @@ use feedly\Models\Entries;
 class EntriesTest extends PHPUnit_Framework_TestCase
 {
 
-    public function testInitialization() {
+    public function testInitialization()
+    {
 
         $model = new Entries('TOKEN');
 
         $this->assertNotEmpty($model->getEndpoint());
     }
 
-    public function testGetByPK() {
+    public function testGetByPK()
+    {
 
         $response = array(
             'email' => 'john@doe.com'
@@ -23,8 +25,8 @@ class EntriesTest extends PHPUnit_Framework_TestCase
         $feedly = $this->getMock('Entries', array('get'));
 
         $feedly->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($response));
+               ->method('get')
+               ->will($this->returnValue($response));
 
         $this->assertEquals($response, $feedly->get('pk'));
     }

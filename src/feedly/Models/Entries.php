@@ -2,16 +2,20 @@
 
 namespace feedly\Models;
 
-class Entries extends FeedlyModel{
+class Entries extends FeedlyModel
+{
 
-    public function __construct($token) {
+    public function __construct($token)
+    {
         parent::__construct($token);
 
         $this->setEndpoint('/v3/entries');
     }
 
-    public function get($pk) {
-        return $this->getClient()->get($this->getApiBaseUrl() . $this->getEndpoint() . '/' . $pk);
+    public function get($pk)
+    {
+        return $this->getClient()
+                    ->get($this->getApiBaseUrl() . $this->getEndpoint() . '/' . $pk);
     }
 
 }

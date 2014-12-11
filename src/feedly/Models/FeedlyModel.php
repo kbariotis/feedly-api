@@ -6,7 +6,8 @@ use feedly\HTTPClient;
 use SebastianBergmann\Exporter\Exception;
 use Symfony\Component\Yaml\Exception\RuntimeException;
 
-class FeedlyModel {
+class FeedlyModel
+{
 
     private
         $_options,
@@ -14,29 +15,33 @@ class FeedlyModel {
         $_apiBaseUrl = "https://cloud.feedly.com",
         $_client;
 
-    public function __construct($token) {
+    public function __construct($token)
+    {
 
-        if(get_class($this) == 'FeedlyModel')
+        if (get_class($this) == 'FeedlyModel')
             throw new Exception('Direct call of this class is not permitted');
 
         $this->_client = new HTTPClient();
 
-        $this->getClient()->setCustomHeader(array(
-            "Authorization: OAuth " . $token,
-            'Content-Type: application/json'
-        ));
+        $this->getClient()
+             ->setCustomHeader(array(
+                                   "Authorization: OAuth " . $token,
+                                   'Content-Type: application/json'
+                               ));
 
     }
 
-    public function fetch() {
-        if(empty($this->_endpoint))
+    public function fetch()
+    {
+        if (empty($this->_endpoint))
             throw new RuntimeException('An endpoint must be set');
 
         return $this->_client->get($this->_apiBaseUrl . $this->_endpoint);
     }
 
-    public function persist() {
-        if(empty($this->_endpoint))
+    public function persist()
+    {
+        if (empty($this->_endpoint))
             throw new \RuntimeException('An endpoint must be set');
 
         return $this->_client->post($this->_apiBaseUrl . $this->_endpoint);

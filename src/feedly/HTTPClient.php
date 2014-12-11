@@ -2,7 +2,8 @@
 
 namespace feedly;
 
-class HTTPClient {
+class HTTPClient
+{
 
     private
         $_token,
@@ -11,7 +12,8 @@ class HTTPClient {
         $_ch;
 
 
-    public function __construct() {
+    public function __construct()
+    {
         if (($this->_ch = @curl_init()) == false) {
             throw new \Exception("Cannot initialize cUrl handler. Is cUrl enabled?");
         }
@@ -19,50 +21,58 @@ class HTTPClient {
         $this->setCurlOptions();
     }
 
-    function __destruct() {
+    function __destruct()
+    {
         curl_close($this->_ch);
     }
 
-    private function setCurlOptions() {
+    private function setCurlOptions()
+    {
         curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->_ch, CURLOPT_ENCODING, "");
         curl_setopt($this->_ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($this->_ch, CURLOPT_CAINFO, "C:\wamp\bin\apache\Apache2.2.21\cacert.crt");
     }
 
-    public function setCustomHeader($headers) {
+    public function setCustomHeader($headers)
+    {
         curl_setopt($this->_ch, CURLOPT_HTTPHEADER, $headers);
     }
 
-    public function setGetParams($params) {
+    public function setGetParams($params)
+    {
         $this->_postParams = $params;
     }
 
-    public function setPostParams($params, $json=true) {
+    public function setPostParams($params, $json = true)
+    {
 
         $this->_postParams = $params;
 
-        if($json)
+        if ($json)
             curl_setopt($this->_ch, CURLOPT_POSTFIELDS, json_encode($this->_postParams));
         else
             curl_setopt($this->_ch, CURLOPT_POSTFIELDS, http_build_query($this->_postParams));
     }
 
-    public function setPostParamsEncType($enctype) {
+    public function setPostParamsEncType($enctype)
+    {
         $this->setCustomHeader(array(
-                'Content-Type: ' . $enctype
-            )
+                                   'Content-Type: ' . $enctype
+                               )
         );
     }
 
-    public function prepareUrl($url) {
-        if(isset($this->_getParams))
+    public function prepareUrl($url)
+    {
+        if (isset($this->_getParams))
             $url = $url . '?' . http_build_query($this->_getParams);
 
         return $url;
     }
 
-    public function get($url) {
+    public function get($url)
+    {
 
         $url = $this->prepareUrl($url);
 
@@ -73,7 +83,8 @@ class HTTPClient {
         return $this->checkResponse($response);
     }
 
-    public function post($url) {
+    public function post($url)
+    {
 
         curl_setopt($this->_ch, CURLOPT_URL, $url);
         curl_setopt($this->_ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -83,7 +94,8 @@ class HTTPClient {
         return $this->checkResponse($response);
     }
 
-    public function delete($url) {
+    public function delete($url)
+    {
 
         curl_setopt($this->_ch, CURLOPT_URL, $url);
         curl_setopt($this->_ch, CURLOPT_CUSTOMREQUEST, "DELETE");
@@ -93,7 +105,8 @@ class HTTPClient {
         return $this->checkResponse($response);
     }
 
-    public function exec() {
+    public function exec()
+    {
         $response = curl_exec($this->_ch);
 
         if (curl_error($this->_ch)) {
@@ -103,14 +116,15 @@ class HTTPClient {
         return $response;
     }
 
-    public function checkResponse($response) {
+    public function checkResponse($response)
+    {
         $httpStatus = curl_getinfo($this->_ch, CURLINFO_HTTP_CODE);
 
         $response = json_decode($response, true);
 
-        if($httpStatus!==200){
-            throw new \Exception("Something went wrong: " . $response['errorMessage'] . ' : ' .
-                $response['errorCode']);
+        if ($httpStatus !== 200) {
+            throw new \Exception("Something went wrong: " . $response[ 'errorMessage' ] . ' : ' .
+                                 $response[ 'errorCode' ]);
         }
 
         return $response;
