@@ -21,4 +21,4 @@ $model = $feedly->getEndpoint('Profile', $_SESSION['access_token']);
 
 $response = $model->fetch();
 
-var_dump($response);
+//var_dump($response);
