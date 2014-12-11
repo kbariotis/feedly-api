@@ -81,4 +81,5 @@ class FeedlyModelTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($json, $feedly->persist());
     }
+
 }

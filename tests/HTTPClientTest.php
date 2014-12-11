@@ -72,4 +72,5 @@ class HTTPClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($client->post('http://kostasbariotis.com'));
 
     }
+
 }
