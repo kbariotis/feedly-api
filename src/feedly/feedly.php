@@ -139,7 +139,7 @@ class Feedly
     {
         if ($this->_storeAccessTokenToSession) {
             if (isset($response[ 'access_token' ])) {
-                $_SESSION[ 'access_token' ] = $response[ 'access_token' ];
+                $_SESSION[ 'feedly_access_token' ] = $response[ 'access_token' ];
                 session_write_close();
             }
         }
@@ -150,8 +150,8 @@ class Feedly
      */
     private function getAccessTokenFromSession()
     {
-        if (isset($_SESSION[ 'access_token' ])) {
-            return $_SESSION[ 'access_token' ];
+        if (isset($_SESSION[ 'feedly_access_token' ])) {
+            return $_SESSION[ 'feedly_access_token' ];
         } else {
             throw new \Exception("No access token", 1);
         }
