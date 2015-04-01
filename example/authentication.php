@@ -21,9 +21,9 @@ $loginUrl = $feedly->getLoginUrl("sandbox", "http://localhost");
 if (isset($_GET['code'])) {
 
     /**
-     * Response will contain the Access Token
+     * Response will contain the Access Token and Refresh Token
      */
-    $token = $feedly->getAccessToken(
+    $tokens = $feedly->getToken(
         "sandbox",
         "A0SXFX54S3K0OC9GNCXG",
         $_GET['code'],
@@ -35,7 +35,7 @@ if (isset($_GET['code'])) {
      * @see https://groups.google.com/forum/#!topic/feedly-cloud/a_cGSAzv8bY
      */
 
-    echo $token;
+    echo $tokens;
 }
 
 if (!isset($_SESSION['feedly_access_token'])) {

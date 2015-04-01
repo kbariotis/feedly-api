@@ -21,20 +21,22 @@ class FeedlyAPIWrapperTest extends PHPUnit_Framework_TestCase
         $this->assertNotEmpty($feedly->getLoginUrl("sandbox", "http://localhost"));
     }
 
-    public function testGetAccessToken()
+    public function testGetTokens()
     {
 
         $response = array(
-            'access_token' => 'dsa5da76d76sa5d67sad567a'
+            'access_token' => 'dsa5da76d76sa5d67sad567a',
+            'expires_in' => '1234',
+            'refresh_token' => 'absa5da76d76sa5d87sad597a'
         );
 
-        $feedly = $this->getMock('Feedly', array('getAccessToken'));
+        $feedly = $this->getMock('Feedly', array('getToken'));
 
         $feedly->expects($this->any())
-               ->method('getAccessToken')
+               ->method('getToken')
                ->will($this->returnValue($response));
 
-        $this->assertEquals($response, $feedly->getAccessToken());
+        $this->assertEquals($response, $feedly->getToken());
     }
 
     public function testGetRefreshAccessToken()
