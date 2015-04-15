@@ -137,8 +137,12 @@ class Feedly
 
         $this->storeAccessTokenToSession($response);
 
-        if (isset($response[ 'access_token' ]))
-            return $response[ 'access_token' ];
+        if (isset($response[ 'access_token' ])) {
+            return array(
+                'access_token' => $response[ 'access_token' ],
+                'expires' => $response[ 'expires_in' ],  
+            );
+        }
     }
 
     private function storeAccessTokenToSession($response)
