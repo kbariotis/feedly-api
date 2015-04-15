@@ -43,7 +43,7 @@ class FeedlyAPIWrapperTest extends PHPUnit_Framework_TestCase
     {
 
         $response = array(
-            'access_token' => 'dsa5da76d76sa5d67sad567a'
+            'access_token' => 'dsa5da76d76sa5d67sad567a',
             'expires_in' => '1234',
         );
 
