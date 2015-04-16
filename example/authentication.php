@@ -38,7 +38,7 @@ if (isset($_GET['code'])) {
     echo $token;
 }
 
-if (!isset($_SESSION['access_token'])) {
+if (!isset($_SESSION['feedly_access_token'])) {
     /**
      * After redirection replace "localhost" with your domain
      * keeping the Auth Code GET param

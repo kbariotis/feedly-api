@@ -17,7 +17,7 @@ $sandboxMode ?
         dirname($_SERVER['PHP_SELF']);
 
 
-$model = $feedly->getEndpoint('Profile', $_SESSION['access_token']);
+$model = $feedly->getEndpoint('Profile', $_SESSION['feedly_access_token']);
 
 $response = $model->fetch();
 
