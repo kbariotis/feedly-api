@@ -77,14 +77,14 @@ class Feedly
     }
 
     /**
-     * Exchange a `code` got from `getLoginUrl` for an `Access Token`
+     * Exchange a `code` from `getLoginUrl` for `Access` and `Refresh` Tokens
      *
      * @param string $client_id     Client's ID provided by Feedly's Administrators
      * @param string $client_secret Client's Secret provided by Feedly's Administrators
      * @param string $auth_code     Code obtained from `getLoginUrl`
      * @param string $redirect_url  Endpoint to reroute with the results
      */
-    public function getAccessToken($client_id, $client_secret, $auth_code,
+    public function getTokens($client_id, $client_secret, $auth_code,
                                    $redirect_url)
     {
 
@@ -108,8 +108,14 @@ class Feedly
 
         $this->storeAccessTokenToSession($response);
 
-        if (isset($response[ 'access_token' ]))
-            return $response[ 'access_token' ];
+        if (isset($response[ 'access_token' ]) &&
+            isset($response[ 'refresh_token' ])) {
+            return array(
+                'access_token' => $response[ 'access_token' ],
+                'refresh_token' => $response[ 'refresh_token' ],
+                'expires' => $response[ 'expires_in' ],
+            );
+        }
     }
 
     public function getRefreshAccessToken($client_id, $client_secret, $refresh_token)
@@ -131,8 +137,12 @@ class Feedly
 
         $this->storeAccessTokenToSession($response);
 
-        if (isset($response[ 'access_token' ]))
-            return $response[ 'access_token' ];
+        if (isset($response[ 'access_token' ])) {
+            return array(
+                'access_token' => $response[ 'access_token' ],
+                'expires' => $response[ 'expires_in' ],  
+            );
+        }
     }
 
     private function storeAccessTokenToSession($response)
