@@ -121,7 +121,7 @@ class HTTPClient
     {
         $httpStatus = curl_getinfo($this->_ch, CURLINFO_HTTP_CODE);
 
-        $response = json_decode($response, true);
+        $response = json_decode($response, true, 512, JSON_BIGINT_AS_STRING);
 
         if ($httpStatus !== 200) {
             throw new \Exception("Something went wrong: " . $response[ 'errorMessage' ] . ' : ' .
