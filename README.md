@@ -20,7 +20,7 @@ If you are working in Sandbox mode of Feedly's API you should know a couple of t
 * Once you've done developing you can contact Feedly and ask them to put you on [production](http://developer.feedly.com/v3/sandbox/).
 
 
-Instalation
+Installation
 -----------
 Add this to your composer.json
 ```
@@ -47,7 +47,7 @@ $feedly = new Feedly($sandbox, $storeAccessTokenToSession);
 
 Check the [example](https://github.com/stakisko/feedly-api/blob/master/example/authentication.php).
 
-Note that not every Feedly actions need authentication. Passing a token is optional.
+Note that not every Feedly action needs authentication. Passing a token is optional.
 
 **Endpoints**
 
