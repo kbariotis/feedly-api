@@ -66,13 +66,13 @@ class Feedly
     {
 
         return ($this->_apiBaseUrl . $this->_authorizePath . "?" .
-            http_build_query(array(
-                                 "client_id"     => $client_id,
-                                 "redirect_uri"  => $redirect_uri,
-                                 "response_type" => $response_type,
-                                 "scope"         => $scope
-                             )
-            )
+                http_build_query(array(
+                        "client_id"     => $client_id,
+                        "redirect_uri"  => $redirect_uri,
+                        "response_type" => $response_type,
+                        "scope"         => $scope
+                    )
+                )
         );
     }
 
@@ -85,23 +85,23 @@ class Feedly
      * @param string $redirect_url  Endpoint to reroute with the results
      */
     public function getTokens($client_id, $client_secret, $auth_code,
-                                   $redirect_url)
+                              $redirect_url)
     {
 
         $this->_client = new HTTPClient();
 
         $this->_client->setCustomHeader(array(
-                                            "Authorization: Basic " . base64_encode($client_id . ":" .
-                                                                                    $client_secret),
-                                        ));
+            "Authorization: Basic " . base64_encode($client_id . ":" .
+                                                    $client_secret),
+        ));
 
         $this->_client->setPostParams(array(
-                                          "code"          => urlencode($auth_code),
-                                          "client_id"     => urlencode($client_id),
-                                          "client_secret" => urlencode($client_secret),
-                                          "redirect_uri"  => $redirect_url,
-                                          "grant_type"    => "authorization_code"
-                                      )
+                "code"          => urlencode($auth_code),
+                "client_id"     => urlencode($client_id),
+                "client_secret" => urlencode($client_secret),
+                "redirect_uri"  => $redirect_url,
+                "grant_type"    => "authorization_code"
+            )
             , false);
 
         $response = $this->_client->post($this->_apiBaseUrl . $this->_accessTokenPath);
@@ -122,15 +122,15 @@ class Feedly
     {
 
         $this->_client->setCustomHeader(array(
-                                            "Authorization: Basic " . base64_encode($client_id . ":" .
-                                                                                    $client_secret),
-                                        ));
+            "Authorization: Basic " . base64_encode($client_id . ":" .
+                                                    $client_secret),
+        ));
 
         $this->_client->setPostParams(array(
-                                          "refresh_token" => urlencode($refresh_token),
-                                          "client_secret" => urlencode($client_secret),
-                                          "grant_type"    => $refresh_token
-                                      )
+                "refresh_token" => urlencode($refresh_token),
+                "client_secret" => urlencode($client_secret),
+                "grant_type"    => $refresh_token
+            )
             , false);
 
         $response = $this->_client->post($this->_apiBaseUrl . $this->_accessTokenPath);
@@ -140,7 +140,7 @@ class Feedly
         if (isset($response[ 'access_token' ])) {
             return array(
                 'access_token' => $response[ 'access_token' ],
-                'expires' => $response[ 'expires_in' ],  
+                'expires' => $response[ 'expires_in' ],
             );
         }
     }
@@ -165,7 +165,7 @@ class Feedly
             if (time() < $_SESSION[ 'feedly_access_expires' ]) {
                 return $_SESSION[ 'feedly_access_token' ];
             } else {
-                throw new \Exception("Access token expired", 2);        
+                throw new \Exception("Access token expired", 2);
             }
         } else {
             throw new \Exception("No access token", 1);
