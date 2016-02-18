@@ -2,6 +2,10 @@
 
 namespace feedly;
 
+use feedly\AccessTokenStorage\AccessTokenStorage;
+use feedly\Mode\Mode;
+use feedly\Response\AccessTokenResponse;
+
 /**
  * PHP Wrapper arround Feedly's REST API.
  *
@@ -11,42 +15,41 @@ namespace feedly;
  */
 class Feedly
 {
-    private
-        $_client,
-        $_sandboxMode,
-        $_apiBaseUrl = "https://cloud.feedly.com",
-        $_authorizePath = "/v3/auth/auth",
-        $_accessTokenPath = "/v3/auth/token",
-        $_storeAccessTokenToSession;
+    private $client;
 
     /**
-     * @param boolean $sandbox                   Enable/Disable Sandbox Mode
-     * @param boolean $storeAccessTokenToSession Choose whether to store the Access token
-     *                                           to $_SESSION or not
+     * @var Mode\Mode
      */
-    public function __construct($sandbox = false, $storeAccessTokenToSession = true)
+    private $apiMode;
+
+    /**
+     * @var AccessTokenStorage
+     */
+    private $accessTokenStorage;
+
+    private $authorizePath   = "/v3/auth/auth";
+    private $accessTokenPath = "/v3/auth/token";
+
+    /**
+     * @param Mode $apiMode
+     * @param AccessTokenStorage $accessTokenStorage
+     */
+    public function __construct(Mode $apiMode, AccessTokenStorage $accessTokenStorage)
     {
 
-        $this->_storeAccessTokenToSession = $storeAccessTokenToSession;
-        $this->_sandboxMode               = $sandbox;
-
-        if ($this->_sandboxMode)
-            $this->_apiBaseUrl = "https://sandbox.feedly.com";
-        if ($this->_storeAccessTokenToSession)
-            session_start();
+        $this->accessTokenStorage = $accessTokenStorage;
+        $this->apiMode            = $apiMode;
     }
 
-    public function getEndpoint($name, $token)
+    public function __call($name, $arguments = [])
     {
-        $className = __NAMESPACE__ . '\\Models\\' . $name;
+        $className = __NAMESPACE__ . '\\Models\\' . ucfirst($name);
 
         if (!class_exists($className)) {
             throw new \InvalidArgumentException("$name is not valid endpoint for Feedly API");
         }
 
-        $class = new $className($token);
-        if ($this->_sandboxMode)
-            $class->setApiBaseUrl("https://sandbox.feedly.com");
+        $class = new $className($this->apiMode, $this->accessTokenStorage);
 
         return $class;
     }
@@ -54,23 +57,22 @@ class Feedly
     /**
      * Return authorization URL
      *
-     * @param string $client_id    Client's ID provided by Feedly's Administrators
-     * @param string $redirect_uri Endpoint to reroute with the results
-     * @param string $response_type
+     * @param string $clientId Client's ID provided by Feedly's Administrators
+     * @param string $redirectUri Endpoint to reroute with the results
+     * @param string $responseType
      * @param string $scope
      *
      * @return string Authorization URL
      */
-    public function getLoginUrl($client_id, $redirect_uri,
-                                $response_type = "code", $scope = "https://cloud.feedly.com/subscriptions")
+    public function getLoginUrl($clientId, $redirectUri,
+                                $responseType = "code", $scope = "https://cloud.feedly.com/subscriptions")
     {
-
-        return ($this->_apiBaseUrl . $this->_authorizePath . "?" .
+        return ($this->apiMode->getApiBaseUrl() . $this->authorizePath . "?" .
                 http_build_query(array(
-                        "client_id"     => $client_id,
-                        "redirect_uri"  => $redirect_uri,
-                        "response_type" => $response_type,
-                        "scope"         => $scope
+                        "client_id" => $clientId,
+                        "redirect_uri" => $redirectUri,
+                        "response_type" => $responseType,
+                        "scope" => $scope
                     )
                 )
         );
@@ -79,96 +81,61 @@ class Feedly
     /**
      * Exchange a `code` from `getLoginUrl` for `Access` and `Refresh` Tokens
      *
-     * @param string $client_id     Client's ID provided by Feedly's Administrators
-     * @param string $client_secret Client's Secret provided by Feedly's Administrators
-     * @param string $auth_code     Code obtained from `getLoginUrl`
-     * @param string $redirect_url  Endpoint to reroute with the results
+     * @param string $clientId Client's ID provided by Feedly's Administrators
+     * @param string $clientSecret Client's Secret provided by Feedly's Administrators
+     * @param string $authCode Code obtained from `getLoginUrl`
+     * @param string $redirectUrl Endpoint to reroute with the results
+     *
+     * @return AccessTokenResponse
      */
-    public function getTokens($client_id, $client_secret, $auth_code,
-                              $redirect_url)
+    public function getTokens($clientId, $clientSecret, $authCode, $redirectUrl)
     {
+        $this->client = new HTTPClient();
 
-        $this->_client = new HTTPClient();
-
-        $this->_client->setCustomHeader(array(
-            "Authorization: Basic " . base64_encode($client_id . ":" .
-                                                    $client_secret),
+        $this->client->setCustomHeader(array(
+            "Authorization: Basic " . base64_encode($clientId . ":" .
+                                                    $clientSecret),
         ));
 
-        $this->_client->setPostParams(array(
-                "code"          => urlencode($auth_code),
-                "client_id"     => urlencode($client_id),
-                "client_secret" => urlencode($client_secret),
-                "redirect_uri"  => $redirect_url,
-                "grant_type"    => "authorization_code"
+        $this->client->setPostParams(array(
+                "code" => urlencode($authCode),
+                "client_id" => urlencode($clientId),
+                "client_secret" => urlencode($clientSecret),
+                "redirect_uri" => $redirectUrl,
+                "grant_type" => "authorization_code"
             )
             , false);
 
-        $response = $this->_client->post($this->_apiBaseUrl . $this->_accessTokenPath);
+        $response = new AccessTokenResponse(
+            $this->client->post($this->apiMode->getApiBaseUrl() . $this->accessTokenPath)
+        );
 
-        $this->storeAccessTokenToSession($response);
+        $this->accessTokenStorage->store($response);
 
-        if (isset($response[ 'access_token' ]) &&
-            isset($response[ 'refresh_token' ])) {
-            return array(
-                'access_token' => $response[ 'access_token' ],
-                'refresh_token' => $response[ 'refresh_token' ],
-                'expires' => $response[ 'expires_in' ],
-            );
-        }
+        return $response;
     }
 
     public function getRefreshAccessToken($client_id, $client_secret, $refresh_token)
     {
 
-        $this->_client->setCustomHeader(array(
+        $this->client->setCustomHeader(array(
             "Authorization: Basic " . base64_encode($client_id . ":" .
                                                     $client_secret),
         ));
 
-        $this->_client->setPostParams(array(
+        $this->client->setPostParams(array(
                 "refresh_token" => urlencode($refresh_token),
                 "client_secret" => urlencode($client_secret),
-                "grant_type"    => $refresh_token
+                "grant_type" => $refresh_token
             )
             , false);
 
-        $response = $this->_client->post($this->_apiBaseUrl . $this->_accessTokenPath);
+        $response = new AccessTokenResponse(
+            $this->client->post($this->apiMode->getApiBaseUrl() . $this->accessTokenPath)
+        );
 
-        $this->storeAccessTokenToSession($response);
+        $this->accessTokenStorage->store($response);
 
-        if (isset($response[ 'access_token' ])) {
-            return array(
-                'access_token' => $response[ 'access_token' ],
-                'expires' => $response[ 'expires_in' ],
-            );
-        }
-    }
-
-    private function storeAccessTokenToSession($response)
-    {
-        if ($this->_storeAccessTokenToSession) {
-            if (isset($response[ 'access_token' ])) {
-                $_SESSION[ 'feedly_access_token' ] = $response[ 'access_token' ];
-                $_SESSION[ 'feedly_access_expires'] = time() + $response[ 'expires_in' ];
-                session_write_close();
-            }
-        }
-    }
-
-    /**
-     * @return string Access Token from $_SESSION
-     */
-    private function getAccessTokenFromSession()
-    {
-        if (isset($_SESSION[ 'feedly_access_token' ]) && isset($_SESSION[ 'feedly_access_expires' ])) {
-            if (time() < $_SESSION[ 'feedly_access_expires' ]) {
-                return $_SESSION[ 'feedly_access_token' ];
-            } else {
-                throw new \Exception("Access token expired", 2);
-            }
-        } else {
-            throw new \Exception("No access token", 1);
-        }
+        return $response;
     }
 }

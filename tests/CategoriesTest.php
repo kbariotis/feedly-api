@@ -3,14 +3,15 @@
 require dirname(__FILE__) . "/../vendor/autoload.php";
 
 use feedly\Models\Categories;
+use feedly\Mode\SandBoxMode;
+use feedly\AccessTokenStorage\AccessTokenBlackholeStorage;
 
 class CategoriesTest extends PHPUnit_Framework_TestCase
 {
 
     public function testInitialization()
     {
-
-        $model = new Categories('SOMETOKEN');
+        $model = new Categories(new SandBoxMode(), new AccessTokenBlackholeStorage('SOMETOKEN'));
 
         $this->assertNotEmpty($model->getEndpoint());
     }

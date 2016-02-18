@@ -2,15 +2,16 @@
 
 require dirname(__FILE__) . "/../vendor/autoload.php";
 
-use feedly\Models\FeedlyModel;
+use feedly\Models\Profile;
+use feedly\Mode\SandBoxMode;
+use feedly\AccessTokenStorage\AccessTokenBlackholeStorage;
 
 class FeedlyModelTest extends PHPUnit_Framework_TestCase
 {
 
     public function testShouldInitializeHTTPClient()
     {
-
-        $client = new FeedlyModel('SOMETOKEN');
+        $client = new Profile(new SandBoxMode(), new AccessTokenBlackholeStorage('SOMETOKEN'));
 
         $this->assertInstanceOf('feedly\HTTPClient', $client->getClient());
     }
@@ -20,32 +21,8 @@ class FeedlyModelTest extends PHPUnit_Framework_TestCase
      */
     public function testNoTokenFailure()
     {
-
-        $client = new FeedlyModel('SOMETOKEN');
-        $client->setEndpoint('/v3/profile');
+        $client = new Profile(new SandBoxMode(), new AccessTokenBlackholeStorage('SOMETOKEN'));
         $client->setOptions(array('email' => 'odysseus'));
-
-        $client->persist();
-    }
-
-    /**
-     * @expectedException Exception
-     */
-    public function testFetchFailureOnEmptyEndpoint()
-    {
-
-        $client = new FeedlyModel('SOMETOKEN');
-
-        $client->fetch();
-    }
-
-    /**
-     * @expectedException Exception
-     */
-    public function testPersistFailureOnEmptyEndpoint()
-    {
-
-        $client = new FeedlyModel('SOMETOKEN');
 
         $client->persist();
     }

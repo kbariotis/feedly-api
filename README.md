@@ -37,10 +37,23 @@ Documentation
 **Constructor:**
 
 ```php
-$sandbox=FALSE;
-$storeAccessTokenToSession=TRUE;
+$feedly = new Feedly(Mode $mode, AccessTokenStorage $accessTokenStorage);
+```
 
-$feedly = new Feedly($sandbox, $storeAccessTokenToSession);
+The `Mode` determines if you want to use the Sandbox mode (`SandBoxMode` class) or standard one (`DeveloperMode` class).
+
+The `AccessTokenStorage` determines where the information about token should be stored. In example in session, file or database.
+
+***Sandbox Example
+
+```php
+$feedly = new Feedly(new feedly\Mode\SandBoxMode(), new feedly\AccessTokenStorage\AccessTokenSessionStorage());
+```
+
+***Standard Mode Example
+
+```php
+$feedly = new Feedly(new feedly\Mode\DeveloperMode(), new feedly\AccessTokenStorage\AccessTokenSessionStorage());
 ```
 
 **Authentication:**
@@ -55,7 +68,7 @@ Note that not every Feedly actions need authentication. Passing a token is optio
 
 ```php
 
-    $profile = $feedly->getEndpoint('Profile');
+    $profile = $feedly->profile();
 
     var_dump($profile->fetch());
 
@@ -70,7 +83,7 @@ Note that not every Feedly actions need authentication. Passing a token is optio
 
 ```php
 
-    $categories = $feedly->getEndpoint('Categories');
+    $categories = $feedly->categories();
 
     var_dump($categories->fetch());
 
@@ -83,7 +96,7 @@ Note that not every Feedly actions need authentication. Passing a token is optio
 
 ```php
 
-    $entries = $feedly->getEndpoint('Entries');
+    $entries = $feedly->entries();
 
     var_dump($entries->get($id));
 
@@ -93,7 +106,7 @@ Note that not every Feedly actions need authentication. Passing a token is optio
 
 ```php
 
-    $streams = $feedly->getEndpoint('Streams');
+    $streams = $feedly->streams();
     
     //Retrieve ids from stream 
     var_dump($stream->get($id,"ids"));
@@ -107,7 +120,7 @@ Note that not every Feedly actions need authentication. Passing a token is optio
 
 ```php
 
-    $markers = $feedly->getEndpoint('Markers');
+    $markers = $feedly->markers();
 
     var_dump($markers->get($id));
 

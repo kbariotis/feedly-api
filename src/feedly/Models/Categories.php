@@ -4,12 +4,9 @@ namespace feedly\Models;
 
 class Categories extends FeedlyModel
 {
-
-    public function __construct($token)
+    public function getEndpoint()
     {
-        parent::__construct($token);
-
-        $this->setEndpoint('/v3/categories');
+        return '/v3/categories';
     }
 
     public function delete($pk)

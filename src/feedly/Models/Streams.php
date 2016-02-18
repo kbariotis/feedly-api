@@ -4,12 +4,9 @@ namespace feedly\Models;
 
 class Streams extends FeedlyModel
 {
-
-    public function __construct($token)
+    public function getEndpoint()
     {
-        parent::__construct($token);
-
-        $this->setEndpoint('/v3/streams');
+        return '/v3/streams';
     }
 
     public function get($ids, $data = "ids")

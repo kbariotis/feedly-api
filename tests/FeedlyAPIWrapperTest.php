@@ -2,7 +2,9 @@
 
 require dirname(__FILE__) . "/../vendor/autoload.php";
 
-use feedly\feedly;
+use feedly\Feedly;
+use feedly\Mode\SandBoxMode;
+use feedly\AccessTokenStorage\AccessTokenBlackholeStorage;
 
 class FeedlyAPIWrapperTest extends PHPUnit_Framework_TestCase
 {
@@ -15,8 +17,7 @@ class FeedlyAPIWrapperTest extends PHPUnit_Framework_TestCase
 
     public function testValidReturnedUrlForAuthorization()
     {
-
-        $feedly = new Feedly(true, false);
+        $feedly = new Feedly(new SandBoxMode(), new AccessTokenBlackholeStorage('SOMETOKEN'));
 
         $this->assertNotEmpty($feedly->getLoginUrl("sandbox", "http://localhost"));
     }

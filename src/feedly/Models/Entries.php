@@ -2,14 +2,14 @@
 
 namespace feedly\Models;
 
+use feedly\AccessTokenStorage\AccessTokenStorage;
+
 class Entries extends FeedlyModel
 {
 
-    public function __construct($token)
+    public function getEndpoint()
     {
-        parent::__construct($token);
-
-        $this->setEndpoint('/v3/entries');
+        return '/v3/entries';
     }
 
     public function get($pk)

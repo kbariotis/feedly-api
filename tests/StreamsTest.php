@@ -3,14 +3,15 @@ s<?php
 require dirname(__FILE__) . "/../vendor/autoload.php";
 
 use feedly\Models\Streams;
+use feedly\Mode\SandBoxMode;
+use feedly\AccessTokenStorage\AccessTokenBlackholeStorage;
 
 class StreamsTest extends PHPUnit_Framework_TestCase
 {
 
     public function testInitialization()
     {
-
-        $model = new Streams('SOMETOKEN');
+        $model = new Streams(new SandBoxMode(), new AccessTokenBlackholeStorage('SOMETOKEN'));
 
         $this->assertNotEmpty($model->getEndpoint());
     }
