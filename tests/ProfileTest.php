@@ -3,14 +3,16 @@
 require dirname(__FILE__) . "/../vendor/autoload.php";
 
 use feedly\Models\Profile;
+use feedly\Mode\SandBoxMode;
+use feedly\AccessTokenStorage\AccessTokenBlackholeStorage;
+
 
 class ProfileTest extends PHPUnit_Framework_TestCase
 {
 
     public function testInitialization()
     {
-
-        $model = new Profile('SOMETOKEN');
+        $model = new Profile(new SandBoxMode(), new AccessTokenBlackholeStorage('SOMETOKEN'));
 
         $this->assertNotEmpty($model->getEndpoint());
     }

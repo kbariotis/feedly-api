@@ -4,12 +4,9 @@ namespace feedly\Models;
 
 class Markers extends FeedlyModel
 {
-
-    public function __construct($token)
+    public function getEndpoint()
     {
-        parent::__construct($token);
-
-        $this->setEndpoint('/v3/markers');
+        return '/v3/markers';
     }
 
     public function get($pk)
