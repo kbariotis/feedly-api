@@ -32,7 +32,7 @@ class HTTPClient
         curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->_ch, CURLOPT_ENCODING, "");
         curl_setopt($this->_ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($this->_ch, CURLOPT_CAINFO, "C:\wamp\bin\apache\Apache2.2.21\cacert.crt");
+        curl_setopt($this->_ch, CURLOPT_CAINFO, "C:\\wamp\\bin\\apache\\Apache2.2.21\\cacert.crt");
     }
 
     public function setCustomHeader($headers)
