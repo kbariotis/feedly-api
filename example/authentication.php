@@ -15,7 +15,7 @@ if (isset($_GET['code'])) {
     /**
      * Response will contain the Access Token and Refresh Token
      */
-    $tokens = $feedly->getToken(
+    $tokens = $feedly->getTokens(
         "sandbox",
         "JSSBD6FZT72058P51XEG",
         $_GET['code'],
