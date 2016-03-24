@@ -42,7 +42,7 @@ class HTTPClient
 
     public function setGetParams($params)
     {
-        $this->_postParams = $params;
+        $this->_getParams = $params;
     }
 
     public function setPostParams($params, $json = true)
