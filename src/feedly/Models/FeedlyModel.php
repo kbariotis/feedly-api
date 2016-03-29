@@ -36,7 +36,7 @@ abstract class FeedlyModel
         if (!is_string($this->getEndpoint()))
             throw new RuntimeException('An endpoint must be set');
 
-        return $this->client->get($this->apiMode->getApiBaseUrl() . $this->getEndpoint());
+        return $this->client->get($this->getApiBaseUrl() . $this->getEndpoint());
     }
 
     public function persist()
@@ -44,7 +44,7 @@ abstract class FeedlyModel
         if (!is_string($this->getEndpoint()))
             throw new \RuntimeException('An endpoint must be set');
 
-        return $this->client->post($this->apiMode->getApiBaseUrl() . $this->getEndpoint());
+        return $this->client->post($this->getApiBaseUrl() . $this->getEndpoint());
     }
 
     public function setOptions($options)
@@ -69,6 +69,11 @@ abstract class FeedlyModel
     public function getClient()
     {
         return $this->client;
+    }
+
+    public function getApiBaseUrl()
+    {
+        return $this->apiMode->getApiBaseUrl();
     }
 
     abstract public function getEndpoint();
