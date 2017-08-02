@@ -32,4 +32,20 @@ class StreamsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($response, $feedly->get('ids'));
     }
 
+    public function testGetContentByIdsWithQuery()
+    {
+
+        $response = array(
+            'email' => 'john@doe.com'
+        );
+
+        $feedly = $this->getMock('Streams', array('get'));
+
+        $feedly->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue($response));
+
+        $this->assertEquals($response, $feedly->get('ids', 'contents', ['count' => 100, 'unreadOnly' => 'true' ]));
+    }
+
 }
