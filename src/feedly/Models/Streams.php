@@ -9,10 +9,11 @@ class Streams extends FeedlyModel
         return '/v3/streams';
     }
 
-    public function get($ids, $data = "ids")
+    public function get($ids, $data = "ids", $input = [])
     {
+        $query = http_build_query($input + ['streamId' => $ids]);
         return $this->getClient()
-                    ->get($this->getApiBaseUrl() . $this->getEndpoint() . '/' . $data . '?streamId=' . urlencode($ids));
+            ->get($this->getApiBaseUrl() . $this->getEndpoint() . '/' . $data . '?' . $query);
     }
 
 }
