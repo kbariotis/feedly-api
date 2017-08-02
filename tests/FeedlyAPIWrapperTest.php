@@ -5,6 +5,7 @@ require dirname(__FILE__) . "/../vendor/autoload.php";
 use feedly\Feedly;
 use feedly\Mode\SandBoxMode;
 use feedly\AccessTokenStorage\AccessTokenBlackholeStorage;
+use feedly\Response\AccessTokenResponse;
 
 class FeedlyAPIWrapperTest extends PHPUnit_Framework_TestCase
 {
@@ -25,28 +26,28 @@ class FeedlyAPIWrapperTest extends PHPUnit_Framework_TestCase
     public function testGetTokens()
     {
 
-        $response = array(
+        $response = new AccessTokenResponse([
             'access_token' => 'dsa5da76d76sa5d67sad567a',
             'expires_in' => '1234',
             'refresh_token' => 'absa5da76d76sa5d87sad597a'
-        );
+        ]);
 
-        $feedly = $this->getMock('Feedly', array('getToken'));
+        $feedly = $this->getMock('Feedly', array('getTokens'));
 
         $feedly->expects($this->any())
-               ->method('getToken')
+               ->method('getTokens')
                ->will($this->returnValue($response));
 
-        $this->assertEquals($response, $feedly->getToken());
+        $this->assertEquals($response, $feedly->getTokens('client_id', 'client_secret', 'authCode', 'redirectUrl'));
     }
 
     public function testGetRefreshAccessToken()
     {
 
-        $response = array(
+        $response = new AccessTokenResponse([
             'access_token' => 'dsa5da76d76sa5d67sad567a',
-            'expires_in' => '1234',
-        );
+            'expires_in' => '1234'
+        ]);
 
         $feedly = $this->getMock('Feedly', array('getRefreshAccessToken'));
 
@@ -54,7 +55,7 @@ class FeedlyAPIWrapperTest extends PHPUnit_Framework_TestCase
                ->method('getRefreshAccessToken')
                ->will($this->returnValue($response));
 
-        $this->assertEquals($response, $feedly->getRefreshAccessToken());
+        $this->assertEquals($response, $feedly->getRefreshAccessToken('client_id', 'secret_id', 'refresh_token'));
     }
 
 }

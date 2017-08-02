@@ -117,6 +117,7 @@ class Feedly
 
     public function getRefreshAccessToken($client_id, $client_secret, $refresh_token)
     {
+        $this->client = new HTTPClient();
 
         $this->client->setCustomHeader(array(
             "Authorization: Basic " . base64_encode($client_id . ":" .
@@ -125,8 +126,9 @@ class Feedly
 
         $this->client->setPostParams(array(
                 "refresh_token" => urlencode($refresh_token),
+                "client_id" => urlencode($client_id),
                 "client_secret" => urlencode($client_secret),
-                "grant_type" => $refresh_token
+                "grant_type" => "refresh_token"
             )
             , false);
 
