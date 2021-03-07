@@ -1,11 +1,6 @@
-**NOTICE** You can find the first edition of my code here [dev](https://github.com/stakisko/feedly-api/tree/legacy)
-
-
 feedly-api
 =========
 PHP wrapper around [Feedly's REST API](http://developer.feedly.com/).
-
-**Under Construction! Not every API's functionality implemented yet.**
 
 [![Build Status](https://travis-ci.org/kbariotis/feedly-api.svg?branch=master)](https://travis-ci.org/stakisko/feedly-api)
 
