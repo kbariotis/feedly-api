@@ -2,11 +2,11 @@ feedly-api
 =========
 PHP wrapper around [Feedly's REST API](http://developer.feedly.com/).
 
-[![Build Status](https://travis-ci.org/kbariotis/feedly-api.svg?branch=master)](https://travis-ci.org/stakisko/feedly-api)
+[![Build Status](https://travis-ci.org/kbariotis/feedly-api.svg?branch=master)](https://travis-ci.org/kbariotis/feedly-api)
 
 Notes
 -----
-Check the [examples](https://github.com/stakisko/feedly-api/blob/master/example) before anything.
+Check the [examples](https://github.com/kbariotis/feedly-api/blob/master/example) before anything.
 
 If you are working in Sandbox mode of Feedly's API you should know a couple of things.
 
